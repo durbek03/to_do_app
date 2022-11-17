@@ -1,25 +1,26 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:to_do_app/home_page/cubit/home_page_cubit.dart';
 
-class AnimatedSearch extends StatefulWidget {
-  AnimatedSearch({Key? key, required this.onPress}) : super(key: key);
+class AnimatedSearch extends StatelessWidget {
+  AnimatedSearch({super.key, required this.onPress});
 
   Function onPress;
 
   @override
-  State<AnimatedSearch> createState() => AnimatedSearchState();
-}
-
-class AnimatedSearchState extends State<AnimatedSearch> {
-  bool collapsed = true;
-
-  @override
   Widget build(BuildContext context) {
+    var cubit = BlocProvider.of<HomePageCubit>(context);
+    context.select(
+      (HomePageCubit value) {
+        return value.state.searchCollapsed;
+      },
+    );
     return AnimatedContainer(
-        height: collapsed ? 0 : 40,
+        height: cubit.state.searchCollapsed ? 0 : 40,
         duration: const Duration(milliseconds: 250),
         child: GestureDetector(
           onTap: () {
-            widget.onPress.call();
+            onPress.call();
           },
           child: Container(
             decoration: BoxDecoration(
@@ -40,5 +41,6 @@ class AnimatedSearchState extends State<AnimatedSearch> {
             ]),
           ),
         ));
+    ;
   }
 }

@@ -17,8 +17,8 @@ class TaskRepository {
     getDao().deleteTask(id);
   }
 
-  Stream<List<TaskData>> watchCompletedTasks() {
-    return getDao().watchCompletedTasks();
+  Stream<List<TaskData>> watchUncompletedTasks() {
+    return getDao().watchUncompletedTasks();
   }
 
   TaskDao getDao() {

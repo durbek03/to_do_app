@@ -20,7 +20,7 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
     delete(task).where((tbl) => tbl.id.equals(id));
   }
 
-  Stream<List<TaskData>> watchCompletedTasks() {
-    return (select(task)..where((tbl) => tbl.completed)).watch();
+  Stream<List<TaskData>> watchUncompletedTasks() {
+    return (select(task)..where((tbl) => tbl.completed.equals(false))).watch();
   }
 }

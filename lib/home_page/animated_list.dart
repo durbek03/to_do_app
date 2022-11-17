@@ -3,19 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
-import 'cubit/home_page_cubit.dart';
+import 'package:to_do_app/home_page/home_page.dart';
 
 class AnimatedSliverList extends StatelessWidget {
   const AnimatedSliverList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    context.watch<HomePageCubit>();
-                  var cubit = BlocProvider.of<HomePageCubit>(context);
-                  List<String> list = cubit.state;
+
     return DiffUtilSliverList<String>(
-      items: List.from(list),
+      items: List.from(stringList),
       builder: (p0, String str) {
         return Slidable(
             endActionPane: ActionPane(
@@ -32,7 +29,6 @@ class AnimatedSliverList extends StatelessWidget {
                 SlidableAction(
                   spacing: 10,
                   onPressed: (context) {
-                    cubit.deleteItemAt(str);
                   },
                   backgroundColor: Color(0xFF21B7CA),
                   foregroundColor: Colors.white,

@@ -12,11 +12,15 @@ class TaskData extends DataClass implements Insertable<TaskData> {
   final String title;
   final String description;
   final DateTime date;
+  final bool completed;
+  final bool archieved;
   const TaskData(
       {required this.id,
       required this.title,
       required this.description,
-      required this.date});
+      required this.date,
+      required this.completed,
+      required this.archieved});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -24,6 +28,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
     map['title'] = Variable<String>(title);
     map['description'] = Variable<String>(description);
     map['date'] = Variable<DateTime>(date);
+    map['completed'] = Variable<bool>(completed);
+    map['archieved'] = Variable<bool>(archieved);
     return map;
   }
 
@@ -33,6 +39,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       title: Value(title),
       description: Value(description),
       date: Value(date),
+      completed: Value(completed),
+      archieved: Value(archieved),
     );
   }
 
@@ -44,6 +52,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       title: serializer.fromJson<String>(json['title']),
       description: serializer.fromJson<String>(json['description']),
       date: serializer.fromJson<DateTime>(json['date']),
+      completed: serializer.fromJson<bool>(json['completed']),
+      archieved: serializer.fromJson<bool>(json['archieved']),
     );
   }
   @override
@@ -54,16 +64,25 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       'title': serializer.toJson<String>(title),
       'description': serializer.toJson<String>(description),
       'date': serializer.toJson<DateTime>(date),
+      'completed': serializer.toJson<bool>(completed),
+      'archieved': serializer.toJson<bool>(archieved),
     };
   }
 
   TaskData copyWith(
-          {int? id, String? title, String? description, DateTime? date}) =>
+          {int? id,
+          String? title,
+          String? description,
+          DateTime? date,
+          bool? completed,
+          bool? archieved}) =>
       TaskData(
         id: id ?? this.id,
         title: title ?? this.title,
         description: description ?? this.description,
         date: date ?? this.date,
+        completed: completed ?? this.completed,
+        archieved: archieved ?? this.archieved,
       );
   @override
   String toString() {
@@ -71,13 +90,16 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('completed: $completed, ')
+          ..write('archieved: $archieved')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, description, date);
+  int get hashCode =>
+      Object.hash(id, title, description, date, completed, archieved);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -85,7 +107,9 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           other.id == this.id &&
           other.title == this.title &&
           other.description == this.description &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.completed == this.completed &&
+          other.archieved == this.archieved);
 }
 
 class TaskCompanion extends UpdateCompanion<TaskData> {
@@ -93,17 +117,23 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
   final Value<String> title;
   final Value<String> description;
   final Value<DateTime> date;
+  final Value<bool> completed;
+  final Value<bool> archieved;
   const TaskCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.description = const Value.absent(),
     this.date = const Value.absent(),
+    this.completed = const Value.absent(),
+    this.archieved = const Value.absent(),
   });
   TaskCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required String description,
     required DateTime date,
+    this.completed = const Value.absent(),
+    this.archieved = const Value.absent(),
   })  : title = Value(title),
         description = Value(description),
         date = Value(date);
@@ -112,12 +142,16 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     Expression<String>? title,
     Expression<String>? description,
     Expression<DateTime>? date,
+    Expression<bool>? completed,
+    Expression<bool>? archieved,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (description != null) 'description': description,
       if (date != null) 'date': date,
+      if (completed != null) 'completed': completed,
+      if (archieved != null) 'archieved': archieved,
     });
   }
 
@@ -125,12 +159,16 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       {Value<int>? id,
       Value<String>? title,
       Value<String>? description,
-      Value<DateTime>? date}) {
+      Value<DateTime>? date,
+      Value<bool>? completed,
+      Value<bool>? archieved}) {
     return TaskCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
       date: date ?? this.date,
+      completed: completed ?? this.completed,
+      archieved: archieved ?? this.archieved,
     );
   }
 
@@ -149,6 +187,12 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
+    if (completed.present) {
+      map['completed'] = Variable<bool>(completed.value);
+    }
+    if (archieved.present) {
+      map['archieved'] = Variable<bool>(archieved.value);
+    }
     return map;
   }
 
@@ -158,7 +202,9 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('description: $description, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('completed: $completed, ')
+          ..write('archieved: $archieved')
           ..write(')'))
         .toString();
   }
@@ -200,8 +246,25 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  final VerificationMeta _completedMeta = const VerificationMeta('completed');
   @override
-  List<GeneratedColumn> get $columns => [id, title, description, date];
+  late final GeneratedColumn<bool> completed = GeneratedColumn<bool>(
+      'completed', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: 'CHECK ("completed" IN (0, 1))',
+      defaultValue: const Constant(false));
+  final VerificationMeta _archievedMeta = const VerificationMeta('archieved');
+  @override
+  late final GeneratedColumn<bool> archieved = GeneratedColumn<bool>(
+      'archieved', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: 'CHECK ("archieved" IN (0, 1))',
+      defaultValue: const Constant(true));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, description, date, completed, archieved];
   @override
   String get aliasedName => _alias ?? 'task';
   @override
@@ -234,6 +297,14 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('completed')) {
+      context.handle(_completedMeta,
+          completed.isAcceptableOrUnknown(data['completed']!, _completedMeta));
+    }
+    if (data.containsKey('archieved')) {
+      context.handle(_archievedMeta,
+          archieved.isAcceptableOrUnknown(data['archieved']!, _archievedMeta));
+    }
     return context;
   }
 
@@ -251,6 +322,10 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       date: attachedDatabase.options.types
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      completed: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}completed'])!,
+      archieved: attachedDatabase.options.types
+          .read(DriftSqlType.bool, data['${effectivePrefix}archieved'])!,
     );
   }
 
