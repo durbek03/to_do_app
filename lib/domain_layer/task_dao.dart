@@ -21,6 +21,6 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
   }
 
   Stream<List<TaskData>> watchUncompletedTasks() {
-    return (select(task)..where((tbl) => tbl.completed.equals(false))).watch();
+    return (select(task)..where((tbl) => tbl.completed.equals(false))..orderBy([(table) => OrderingTerm.asc(table.date)])).watch();
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/home_page.dart';
 import 'package:to_do_app/utils/colors.dart';
@@ -10,7 +12,7 @@ import 'package:to_do_app/utils/colors.dart';
 import 'cubit/home_page_cubit.dart';
 
 class AnimatedSliverList extends StatelessWidget {
-  const AnimatedSliverList({super.key});
+  AnimatedSliverList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +49,10 @@ class AnimatedSliverList extends StatelessWidget {
 }
 
 class _ListItem extends StatelessWidget {
-  const _ListItem({super.key, required this.task});
+  _ListItem({super.key, required this.task});
 
   final TaskData task;
+  final DateFormat formatter = DateFormat('dd.MM.yyyy');
 
   @override
   Widget build(BuildContext context) {
@@ -65,21 +68,19 @@ class _ListItem extends StatelessWidget {
             icon: CupertinoIcons.check_mark,
             label: 'Complete',
           ),
-          Builder(
-            builder: (context) {
-              return SlidableAction(
-                spacing: 10,
-                onPressed: (context) {
-                  var cubit = BlocProvider.of<HomePageCubit>(context);
-                  cubit.deleteTask(task.id);
-                },
-                backgroundColor: const Color(0xFFFE4A49),
-                foregroundColor: Colors.white,
-                icon: CupertinoIcons.delete,
-                label: 'Delete',
-              );
-            }
-          ),
+          Builder(builder: (context) {
+            return SlidableAction(
+              spacing: 10,
+              onPressed: (context) {
+                var cubit = BlocProvider.of<HomePageCubit>(context);
+                cubit.deleteTask(task.id);
+              },
+              backgroundColor: const Color(0xFFFE4A49),
+              foregroundColor: Colors.white,
+              icon: CupertinoIcons.delete,
+              label: 'Delete',
+            );
+          }),
         ],
       ),
       child: Container(
@@ -100,7 +101,7 @@ class _ListItem extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              "Due to: ${task.date.day}.${task.date.month}.${task.date.year}",
+              "Due to: ${formatter.format(task.date)}",
               style: TextStyle(color: dirtyWhite, fontSize: 15),
             )
           ],

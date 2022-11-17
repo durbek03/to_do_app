@@ -26,7 +26,7 @@ class AnimatedSearch extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
                 color: Color(brown500),
-                borderRadius: BorderRadius.circular(12)),
+                borderRadius: BorderRadius.circular(5)),
             child: Row(children: const [
               SizedBox(width: 7),
               Icon(

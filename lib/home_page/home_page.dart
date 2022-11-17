@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -16,6 +15,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //injecting home page cubit
     return BlocProvider(
       create: (context) =>
           HomePageCubit(RepositoryProvider.of<TaskRepository>(context)),
@@ -23,6 +23,7 @@ class HomePage extends StatelessWidget {
         return CupertinoPageScaffold(
           child: NotificationListener<ScrollNotification>(
             onNotification: (notification) {
+              //search collapse animation logic
               var cubit = BlocProvider.of<HomePageCubit>(context);
               if (scrollController.offset < -10 &&
                   scrollController.position.userScrollDirection ==
@@ -57,17 +58,18 @@ class HomePage extends StatelessWidget {
                     sliver: SliverToBoxAdapter(
                       child: Hero(
                         tag: "search",
+                        /* 
+                        passing cubit to AnimatedSearch manually even though it is already in a correct tree.
+                        Because there is an error, probably due to Hero animation.
+                        */
                         child: BlocProvider.value(
                           value: BlocProvider.of<HomePageCubit>(context),
                           child: AnimatedSearch(
                             onPress: () {
                               Navigator.push(
                                 context,
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (context, animation, secondaryAnimation) {
-                                    return SearchPage();
-                                  },
+                                CupertinoPageRoute(
+                                  builder: (context) => SearchPage(),                                
                                 ),
                               );
                             },
