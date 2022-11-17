@@ -39,7 +39,7 @@ class AnimatedSliverList extends StatelessWidget {
                 child: child,
               ),
               removeAnimationDuration: const Duration(milliseconds: 250),
-              insertAnimationDuration: const Duration(milliseconds: 500),
+              insertAnimationDuration: const Duration(milliseconds: 250),
             ),
           );
     ;
@@ -65,18 +65,25 @@ class _ListItem extends StatelessWidget {
             icon: CupertinoIcons.check_mark,
             label: 'Complete',
           ),
-          SlidableAction(
-            spacing: 10,
-            onPressed: (context) {},
-            backgroundColor: Color(0xFFFE4A49),
-            foregroundColor: Colors.white,
-            icon: CupertinoIcons.delete,
-            label: 'Delete',
+          Builder(
+            builder: (context) {
+              return SlidableAction(
+                spacing: 10,
+                onPressed: (context) {
+                  var cubit = BlocProvider.of<HomePageCubit>(context);
+                  cubit.deleteTask(task.id);
+                },
+                backgroundColor: const Color(0xFFFE4A49),
+                foregroundColor: Colors.white,
+                icon: CupertinoIcons.delete,
+                label: 'Delete',
+              );
+            }
           ),
         ],
       ),
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
             color: Color(brown500), borderRadius: BorderRadius.circular(5)),
         child: Column(
@@ -85,13 +92,13 @@ class _ListItem extends StatelessWidget {
           children: [
             Text(
               "• ${task.title}",
-              style: TextStyle(
+              style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   overflow: TextOverflow.clip),
               maxLines: 1,
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               "Due to: ${task.date.day}.${task.date.month}.${task.date.year}",
               style: TextStyle(color: dirtyWhite, fontSize: 15),

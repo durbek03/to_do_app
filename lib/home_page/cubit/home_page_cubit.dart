@@ -17,6 +17,10 @@ class HomePageCubit extends Cubit<HomePageState> {
     });
   }
 
+  deleteTask(int id) {
+    rep.deleteTask(id);
+  }
+
   hideSearch() {
     emit(state.copyWith(searchCollapsed: true));
   }

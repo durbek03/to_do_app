@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/animated_search.dart';
 import 'package:to_do_app/home_page/animated_list.dart';
@@ -37,44 +38,47 @@ class HomePage extends StatelessWidget {
               }
               return true;
             },
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics()),
-              controller: scrollController,
-              slivers: [
-                CupertinoSliverNavigationBar(
-                  border: Border(bottom: BorderSide(color: Color(brown500))),
-                  largeTitle: Text(
-                    "To do list",
-                    style: TextStyle(color: dirtyWhite),
+            
+            child: SlidableAutoCloseBehavior(
+              child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics()),
+                controller: scrollController,
+                slivers: [
+                  CupertinoSliverNavigationBar(
+                    border: Border(bottom: BorderSide(color: Color(brown500))),
+                    largeTitle: Text(
+                      "To do list",
+                      style: TextStyle(color: dirtyWhite),
+                    ),
                   ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.all(8),
-                  sliver: SliverToBoxAdapter(
-                    child: Hero(
-                      tag: "search",
-                      child: BlocProvider.value(
-                        value: BlocProvider.of<HomePageCubit>(context),
-                        child: AnimatedSearch(
-                          onPress: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) {
-                                  return SearchPage();
-                                },
-                              ),
-                            );
-                          },
+                  SliverPadding(
+                    padding: const EdgeInsets.all(8),
+                    sliver: SliverToBoxAdapter(
+                      child: Hero(
+                        tag: "search",
+                        child: BlocProvider.value(
+                          value: BlocProvider.of<HomePageCubit>(context),
+                          child: AnimatedSearch(
+                            onPress: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return SearchPage();
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                AnimatedSliverList()
-              ],
+                  AnimatedSliverList()
+                ],
+              ),
             ),
           ),
         );
