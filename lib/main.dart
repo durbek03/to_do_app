@@ -5,6 +5,8 @@ import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/home_page.dart';
 
+import 'add_page/add_page.dart';
+
 void main(List<String> args) {
   runApp(const RootApp());
 }
@@ -54,16 +56,7 @@ class RootApp extends StatelessWidget {
   }
 }
 
-class AddPage extends StatelessWidget {
-  const AddPage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: CupertinoSearchTextField(),
-    );
-  }
-}
 
 class LogScreen extends StatelessWidget {
   const LogScreen({Key? key}) : super(key: key);
