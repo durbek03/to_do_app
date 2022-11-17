@@ -15,7 +15,11 @@ class SearchPage extends StatelessWidget {
       child: SafeArea(
         child: Hero(
           tag: "search",
-          child: CupertinoSearchTextField(),
+          child: Container(
+              height: 40,
+              child: CupertinoSearchTextField(
+                decoration: BoxDecoration(color: Color(0xFFEFEFF0)),
+              )),
         ),
       ),
     );

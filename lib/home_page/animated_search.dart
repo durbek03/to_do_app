@@ -1,7 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class AnimatedSearch extends StatefulWidget {
   AnimatedSearch({Key? key, required this.onPress}) : super(key: key);
@@ -13,22 +10,22 @@ class AnimatedSearch extends StatefulWidget {
 }
 
 class AnimatedSearchState extends State<AnimatedSearch> {
-  bool collapsed = false;
+  bool collapsed = true;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
         height: collapsed ? 0 : 40,
-        duration: Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 250),
         child: GestureDetector(
           onTap: () {
             widget.onPress.call();
           },
           child: Container(
             decoration: BoxDecoration(
-                color: Color(0xFFEFEFF0),
+                color: const Color(0xFFEFEFF0),
                 borderRadius: BorderRadius.circular(12)),
-            child: Row(children: [
+            child: Row(children: const [
               SizedBox(width: 7),
               Icon(
                 CupertinoIcons.search,

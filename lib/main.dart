@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/home_page/home_page.dart';
 
 void main(List<String> args) {
-  runApp(RootApp());
+  runApp(const RootApp());
 }
 
 class RootApp extends StatelessWidget {
@@ -13,7 +13,7 @@ class RootApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoApp(
       home: CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(items: [
+        tabBar: CupertinoTabBar(items: const [
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.home),
           ),
