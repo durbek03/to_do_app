@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/home_page/cubit/home_page_cubit.dart';
+import 'package:to_do_app/utils/colors.dart';
 
 class AnimatedSearch extends StatelessWidget {
   AnimatedSearch({super.key, required this.onPress});
@@ -17,14 +18,14 @@ class AnimatedSearch extends StatelessWidget {
     );
     return AnimatedContainer(
         height: cubit.state.searchCollapsed ? 0 : 40,
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 150),
         child: GestureDetector(
           onTap: () {
             onPress.call();
           },
           child: Container(
             decoration: BoxDecoration(
-                color: const Color(0xFFEFEFF0),
+                color: Color(brown500),
                 borderRadius: BorderRadius.circular(12)),
             child: Row(children: const [
               SizedBox(width: 7),

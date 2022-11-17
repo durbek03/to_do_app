@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/home_page.dart';
+import 'package:to_do_app/utils/colors.dart';
 
 import 'cubit/home_page_cubit.dart';
 
@@ -16,56 +17,88 @@ class AnimatedSliverList extends StatelessWidget {
     context.select((HomePageCubit cubit) => cubit.state.unCompletedTasks);
     var cubit = BlocProvider.of<HomePageCubit>(context);
     return cubit.state.unCompletedTasks.isEmpty
-        ? SliverToBoxAdapter(
-            child: Text("No data to show"))
-        : DiffUtilSliverList<TaskData>(
-            items: List.from(cubit.state.unCompletedTasks),
-            builder: (p0, TaskData task) {
-              return Slidable(
-                  endActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    children: [
-                      SlidableAction(
-                        spacing: 10,
-                        onPressed: (context) {},
-                        backgroundColor: Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: CupertinoIcons.check_mark,
-                        label: 'Complete',
-                      ),
-                      SlidableAction(
-                        spacing: 10,
-                        onPressed: (context) {},
-                        backgroundColor: Color(0xFF21B7CA),
-                        foregroundColor: Colors.white,
-                        icon: CupertinoIcons.delete,
-                        label: 'Delete',
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        color: Colors.red,
-                        child: Text(task.title),
-                      ),
-                    ],
-                  ));
-            },
-            insertAnimationBuilder: (context, animation, child) =>
-                FadeTransition(
-              opacity: animation,
-              child: child,
+        ? SliverToBoxAdapter(child: Text("No data to show"))
+        : SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            sliver: DiffUtilSliverList<TaskData>(
+              items: List.from(cubit.state.unCompletedTasks),
+              builder: (p0, TaskData task) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _ListItem(task: task),
+                );
+              },
+              insertAnimationBuilder: (context, animation, child) =>
+                  FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+              removeAnimationBuilder: (context, animation, child) =>
+                  SizeTransition(
+                sizeFactor: animation,
+                child: child,
+              ),
+              removeAnimationDuration: const Duration(milliseconds: 250),
+              insertAnimationDuration: const Duration(milliseconds: 500),
             ),
-            removeAnimationBuilder: (context, animation, child) =>
-                SizeTransition(
-              sizeFactor: animation,
-              child: child,
-            ),
-            removeAnimationDuration: const Duration(milliseconds: 250),
-            insertAnimationDuration: const Duration(milliseconds: 500),
           );
     ;
+  }
+}
+
+class _ListItem extends StatelessWidget {
+  const _ListItem({super.key, required this.task});
+
+  final TaskData task;
+
+  @override
+  Widget build(BuildContext context) {
+    return Slidable(
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            spacing: 10,
+            onPressed: (context) {},
+            backgroundColor: Color(blue),
+            foregroundColor: Colors.white,
+            icon: CupertinoIcons.check_mark,
+            label: 'Complete',
+          ),
+          SlidableAction(
+            spacing: 10,
+            onPressed: (context) {},
+            backgroundColor: Color(0xFFFE4A49),
+            foregroundColor: Colors.white,
+            icon: CupertinoIcons.delete,
+            label: 'Delete',
+          ),
+        ],
+      ),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            color: Color(brown500), borderRadius: BorderRadius.circular(5)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              "• ${task.title}",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  overflow: TextOverflow.clip),
+              maxLines: 1,
+            ),
+            SizedBox(height: 5),
+            Text(
+              "Due to: ${task.date.day}.${task.date.month}.${task.date.year}",
+              style: TextStyle(color: dirtyWhite, fontSize: 15),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

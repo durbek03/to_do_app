@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
@@ -6,6 +7,7 @@ import 'package:to_do_app/home_page/animated_search.dart';
 import 'package:to_do_app/home_page/animated_list.dart';
 import 'package:to_do_app/home_page/cubit/home_page_cubit.dart';
 import 'package:to_do_app/home_page/search_page.dart';
+import 'package:to_do_app/utils/colors.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -36,10 +38,16 @@ class HomePage extends StatelessWidget {
               return true;
             },
             child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics()),
               controller: scrollController,
               slivers: [
-                const CupertinoSliverNavigationBar(
-                  largeTitle: Text("To do list"),
+                CupertinoSliverNavigationBar(
+                  border: Border(bottom: BorderSide(color: Color(brown500))),
+                  largeTitle: Text(
+                    "To do list",
+                    style: TextStyle(color: dirtyWhite),
+                  ),
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.all(8),

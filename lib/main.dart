@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/home_page.dart';
+import 'package:to_do_app/utils/colors.dart';
 
 import 'add_page/add_page.dart';
 
@@ -27,18 +28,26 @@ class RootApp extends StatelessWidget {
         )
       ],
       child: CupertinoApp(
+        theme: CupertinoThemeData(
+            barBackgroundColor: Color(brown700),
+            scaffoldBackgroundColor: Color(brown700),
+            primaryContrastingColor: Color(brown500)),
         home: CupertinoTabScaffold(
-          tabBar: CupertinoTabBar(items: const [
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.add),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.archivebox),
-            ),
-          ]),
+          tabBar: CupertinoTabBar(
+            activeColor: Color(blue),
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.home),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.add),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.archivebox),
+              ),
+            ],
+            backgroundColor: Color(brown500),
+          ),
           tabBuilder: (context, value) {
             late Widget page;
             if (value == 0) {
@@ -55,8 +64,6 @@ class RootApp extends StatelessWidget {
     );
   }
 }
-
-
 
 class LogScreen extends StatelessWidget {
   const LogScreen({Key? key}) : super(key: key);
