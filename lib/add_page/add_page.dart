@@ -28,7 +28,7 @@ class _AddPageState extends State<AddPage> {
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           "Add task",
-          style: TextStyle(color: dirtyWhite),
+          style: TextStyle(color: Color(green700)),
         ),
       ),
       child: SafeArea(
@@ -37,8 +37,8 @@ class _AddPageState extends State<AddPage> {
           child: Column(
             children: [
               CupertinoTextField(
-                placeholderStyle: TextStyle(color: Color(brown200)),
-                style: TextStyle(color: Color(brown200)),
+                placeholderStyle: TextStyle(color: Color(grey200)),
+                style: TextStyle(color: Color(grey200)),
                 controller: titleController,
                 decoration: _getTextFieldDecoration(),
                 placeholder: "Task title",
@@ -49,8 +49,8 @@ class _AddPageState extends State<AddPage> {
               Container(
                 height: 250,
                 child: CupertinoTextField(
-                  placeholderStyle: TextStyle(color: Color(brown200)),
-                  style: TextStyle(color: Color(brown200)),
+                  placeholderStyle: TextStyle(color: Color(grey200)),
+                  style: TextStyle(color: Color(grey200)),
                   controller: descrController,
                   textAlignVertical: TextAlignVertical.top,
                   maxLines: null,
@@ -93,7 +93,7 @@ class _AddPageState extends State<AddPage> {
         Expanded(
           child: ActionButton(
             title: "Save",
-            color: Color(blue),
+            color: Color(green),
             onTap: () {
               FocusManager.instance.primaryFocus!.unfocus();
 
@@ -119,7 +119,7 @@ class _AddPageState extends State<AddPage> {
 
   BoxDecoration _getTextFieldDecoration() {
     return BoxDecoration(
-        border: Border.all(width: 1, color: Color(brown500)),
+        border: Border.all(width: 1, color: Color(grey500)),
         borderRadius: BorderRadius.circular(5));
   }
 
@@ -129,11 +129,10 @@ class _AddPageState extends State<AddPage> {
 
     var toast = Container(
       decoration: BoxDecoration(
-          color: Color(brown500), borderRadius: BorderRadius.circular(5)),
+          color: Color(grey500), borderRadius: BorderRadius.circular(5)),
       padding: EdgeInsets.all(15),
       child: Text(
         message,
-        style: TextStyle(color: dirtyWhite),
       ),
     );
     fToast.showToast(

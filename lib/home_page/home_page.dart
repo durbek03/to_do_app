@@ -16,75 +16,79 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //injecting home page cubit
-    return BlocProvider(
-      create: (context) =>
-          HomePageCubit(RepositoryProvider.of<TaskRepository>(context)),
-      child: Builder(builder: (context) {
-        return CupertinoPageScaffold(
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              //search collapse animation logic
-              var cubit = BlocProvider.of<HomePageCubit>(context);
-              if (scrollController.offset < -10 &&
-                  scrollController.position.userScrollDirection ==
-                      ScrollDirection.forward &&
-                  cubit.state.searchCollapsed) {
-                cubit.showSearch();
-              } else {
-                if (!cubit.state.searchCollapsed &&
+    return CupertinoTabView(
+      builder: (context) => BlocProvider(
+        create: (context) =>
+            HomePageCubit(RepositoryProvider.of<TaskRepository>(context)),
+        child: Builder(builder: (context) {
+          return CupertinoPageScaffold(
+            backgroundColor: Color(grey200),
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                //search collapse animation logic
+                var cubit = BlocProvider.of<HomePageCubit>(context);
+                if (scrollController.offset < -10 &&
                     scrollController.position.userScrollDirection ==
-                        ScrollDirection.reverse) {
-                  cubit.hideSearch();
+                        ScrollDirection.forward &&
+                    cubit.state.searchCollapsed) {
+                  cubit.showSearch();
+                } else {
+                  if (!cubit.state.searchCollapsed &&
+                      scrollController.position.userScrollDirection ==
+                          ScrollDirection.reverse) {
+                    cubit.hideSearch();
+                  }
                 }
-              }
-              return true;
-            },
-            
-            child: SlidableAutoCloseBehavior(
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics()),
-                controller: scrollController,
-                slivers: [
-                  CupertinoSliverNavigationBar(
-                    border: Border(bottom: BorderSide(color: Color(brown500))),
-                    largeTitle: Text(
-                      "To do list",
-                      style: TextStyle(color: dirtyWhite),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.all(8),
-                    sliver: SliverToBoxAdapter(
-                      child: Hero(
-                        tag: "search",
-                        /* 
-                        passing cubit to AnimatedSearch manually even though it is already in a correct tree.
-                        Because there is an error, probably due to Hero animation.
-                        */
-                        child: BlocProvider.value(
-                          value: BlocProvider.of<HomePageCubit>(context),
-                          child: AnimatedSearch(
-                            onPress: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) => SearchPage(),                                
-                                ),
-                              );
-                            },
+                return true;
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: SlidableAutoCloseBehavior(
+                  child: CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics()),
+                    controller: scrollController,
+                    slivers: [
+                      CupertinoSliverNavigationBar(
+                        border: null,
+                        backgroundColor: Color(grey200),
+                        largeTitle: Text(
+                          "To add list",
+                          style: TextStyle(color: Color(green700)),
+                        ),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 10),
+                        sliver: SliverToBoxAdapter(
+                          child: Hero(
+                            tag: "search",
+                            child: BlocProvider.value(
+                              value: BlocProvider.of<HomePageCubit>(context),
+                              child: AnimatedSearch(
+                                onPress: () {
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (context) => SearchPage(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      SliverPadding(
+                          padding: EdgeInsets.symmetric(horizontal: 2),
+                          sliver: AnimatedSliverList())
+                    ],
                   ),
-                  AnimatedSliverList()
-                ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }

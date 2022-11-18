@@ -13,7 +13,10 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text("Search", style: TextStyle(color: dirtyWhite),),
+        middle: Text(
+          "Search",
+          style: TextStyle(color: Color(green700)),
+        ),
       ),
       child: SafeArea(
         child: Hero(
@@ -21,10 +24,8 @@ class SearchPage extends StatelessWidget {
           child: Container(
               height: 40,
               child: CupertinoSearchTextField(
-                style: TextStyle(color:dirtyWhite),
                 controller: controller,
-                itemColor: dirtyWhite,
-                decoration: BoxDecoration(color: Color(brown500)),
+                decoration: BoxDecoration(color: Color(grey500)),
               )),
         ),
       ),

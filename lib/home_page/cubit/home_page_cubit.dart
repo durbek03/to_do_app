@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:drift/drift.dart';
 import 'package:meta/meta.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
@@ -19,6 +20,23 @@ class HomePageCubit extends Cubit<HomePageState> {
 
   deleteTask(int id) {
     rep.deleteTask(id);
+  }
+
+  //can restore after deletion;
+  restoreTask(TaskData entry) {
+    rep.addTask(entry.toCompanion(true));
+  }
+
+  archiveTask(TaskData entry) {
+    rep.updateTask(entry.copyWith(archieved: true).toCompanion(true));
+  }
+
+  unarchiveTask(TaskData entry) {
+    rep.updateTask(entry.copyWith(archieved: false).toCompanion(true));
+  }
+
+  completeTask(TaskData entry) {
+    rep.updateTask(entry.copyWith(completed: true).toCompanion(true));
   }
 
   hideSearch() {

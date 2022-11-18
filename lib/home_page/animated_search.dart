@@ -17,31 +17,30 @@ class AnimatedSearch extends StatelessWidget {
       },
     );
     return AnimatedContainer(
-        height: cubit.state.searchCollapsed ? 0 : 40,
-        duration: const Duration(milliseconds: 150),
-        child: GestureDetector(
-          onTap: () {
-            onPress.call();
-          },
-          child: Container(
-            decoration: BoxDecoration(
-                color: Color(brown500),
-                borderRadius: BorderRadius.circular(5)),
-            child: Row(children: const [
-              SizedBox(width: 7),
-              Icon(
-                CupertinoIcons.search,
-                color: Color(0xFF848488),
-                size: 20,
-              ),
-              SizedBox(width: 3),
-              Text(
-                "Search",
-                style: TextStyle(color: Color(0xFF848488)),
-              )
-            ]),
-          ),
-        ));
-    ;
+      height: cubit.state.searchCollapsed ? 0 : 40,
+      duration: const Duration(milliseconds: 150),
+      child: GestureDetector(
+        onTap: () {
+          onPress.call();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: Color(grey500), borderRadius: BorderRadius.circular(5)),
+          child: Row(children: const [
+            SizedBox(width: 7),
+            Icon(
+              CupertinoIcons.search,
+              color: Color(0xFF848488),
+              size: 20,
+            ),
+            SizedBox(width: 3),
+            Text(
+              "Search",
+              style: TextStyle(color: Color(0xFF848488)),
+            )
+          ]),
+        ),
+      ),
+    );
   }
 }

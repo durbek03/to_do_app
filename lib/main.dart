@@ -19,10 +19,7 @@ class RootApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      theme: CupertinoThemeData(
-          barBackgroundColor: Color(brown700),
-          scaffoldBackgroundColor: Color(brown700),
-          primaryContrastingColor: Color(brown500)),
+      theme: CupertinoThemeData(),
       home: Builder(builder: (context) {
         //Injecting repositories
         return MultiRepositoryProvider(
@@ -39,20 +36,48 @@ class RootApp extends StatelessWidget {
             )
           ],
           child: CupertinoTabScaffold(
+            resizeToAvoidBottomInset: false,
             tabBar: CupertinoTabBar(
-              activeColor: Color(blue),
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.home),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.add),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(CupertinoIcons.archivebox),
-                ),
+              height: 80,
+              backgroundColor: Color(bottomNavBarColor),
+              activeColor: Color(green),
+              items: [
+                _getBottomNavItem(
+                    Image.asset(
+                      'lib/assets/to_do_list.png',
+                      width: 25,
+                      height: 25,
+                      color: Color(grey700),
+                    ),
+                    "Tasks",
+                    Image.asset(
+                      'lib/assets/to_do_list.png',
+                      width: 25,
+                      height: 25,
+                      color: Color(green),
+                    )),
+                _getBottomNavItem(
+                    const Icon(
+                      Icons.addchart,
+                      size: 25,
+                    ),
+                    "Add task"),
+                _getBottomNavItem(
+                  Image.asset(
+                    'lib/assets/archive.png',
+                    width: 25,
+                    height: 25,
+                    color: Color(grey700),
+                  ),
+                  "Archive",
+                  Image.asset(
+                    'lib/assets/archive.png',
+                    width: 25,
+                    height: 25,
+                    color: Color(green),
+                  ),
+                )
               ],
-              backgroundColor: Color(brown500),
             ),
             tabBuilder: (context, value) {
               late Widget page;
@@ -68,6 +93,32 @@ class RootApp extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  BottomNavigationBarItem _getBottomNavItem(Widget icon, String title,
+      [Widget? activeIcon]) {
+    return BottomNavigationBarItem(
+      activeIcon: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          activeIcon ?? icon,
+          Text(
+            title,
+            style: const TextStyle(fontSize: 15),
+          )
+        ],
+      ),
+      icon: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          icon,
+          Text(
+            title,
+            style: const TextStyle(fontSize: 15),
+          )
+        ],
+      ),
     );
   }
 }

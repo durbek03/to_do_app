@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
-int brown700 = 0xFF111111;
-int brown500 = 0xFF2A2A2A;
-int brown200 = 0xFFA7A7A7;
-int blue = 0xFF21B7CA;
+int grey700 = 0xFFABB8BF;
+int grey200 = 0xFFF6FAFB;
+int grey500 = 0xFFE5E5E5;
+int green = 0xFF19D94E;
 int red = 0xFFFE4A49;
-Color dirtyWhite = const Color.fromARGB(255, 210, 210, 210);
+int bottomNavBarColor = 0xFFFAFAFA;
+int green700 = 0xFF08292C;
