@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 import '../domain_layer/app_database.dart';
-import 'cubit/home_page_cubit.dart';
 
 class SlidableListItem extends StatelessWidget {
   SlidableListItem(

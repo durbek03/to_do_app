@@ -1,22 +1,21 @@
 import 'package:diffutil_sliverlist/diffutil_sliverlist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/home_page/home_page_dialogs.dart';
-import 'package:to_do_app/home_page/slidable_list_item.dart';
 import 'package:to_do_app/utils/colors.dart';
 
-class AnimatedSliverList extends StatelessWidget {
-  AnimatedSliverList({super.key});
+import '../slidable_list_item.dart';
+
+class SearchAnimatedSliverList extends StatelessWidget {
+  const SearchAnimatedSliverList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var toast = RepositoryProvider.of<FToast>(context);
-    context.select((HomePageBloc cubit) => cubit.state.unCompletedTasks);
+    context.select((HomePageBloc value) => value.state.searchResult);
     var bloc = BlocProvider.of<HomePageBloc>(context);
-    var list = bloc.state.unCompletedTasks;
+    var list = bloc.state.searchResult;
 
     return list.isEmpty
         ? SliverPadding(
@@ -25,7 +24,7 @@ class AnimatedSliverList extends StatelessWidget {
                 child: Column(
               children: [
                 Image.asset(
-                  'lib/assets/empty.png',
+                  'lib/assets/no_result.png',
                   color: Color(green),
                   scale: 5,
                 ),
@@ -51,9 +50,9 @@ class AnimatedSliverList extends StatelessWidget {
                     showCupertinoDialog(
                         context: context,
                         builder: (_) => DeletionDialog(
-                            bloc: bloc,
                             task: task,
-                            toast: toast));
+                            toast: RepositoryProvider.of(context),
+                            bloc: bloc));
                   },
                 ),
               );

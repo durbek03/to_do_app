@@ -21,6 +21,10 @@ class TaskRepository {
     return getDao().watchUncompletedTasks();
   }
 
+  Future<List<TaskData>> searchTask(String entry) {
+    return getDao().searchTask(entry);
+  }
+
   TaskDao getDao() {
     return db.taskDao;
   }

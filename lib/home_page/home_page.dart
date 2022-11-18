@@ -2,12 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/animated_search.dart';
 import 'package:to_do_app/home_page/animated_list.dart';
-import 'package:to_do_app/home_page/cubit/home_page_cubit.dart';
-import 'package:to_do_app/home_page/cubit/search_cubit.dart';
-import 'package:to_do_app/home_page/search_page.dart';
+import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
+import 'package:to_do_app/home_page/search_page/search_page.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,32 +16,25 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     //injecting home page cubit
     return CupertinoTabView(
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => HomePageCubit(RepositoryProvider.of(context)),
-          ),
-          BlocProvider(
-            create: (context) => SearchCubit(RepositoryProvider.of(context)),
-          )
-        ],
+      builder: (context) => BlocProvider(
+        create: (context) => HomePageBloc(RepositoryProvider.of(context)),
         child: Builder(builder: (context) {
+          var bloc = BlocProvider.of<HomePageBloc>(context);
           return CupertinoPageScaffold(
             backgroundColor: Color(grey200),
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 //search collapse animation logic
-                var cubit = BlocProvider.of<HomePageCubit>(context);
                 if (scrollController.offset < -10 &&
                     scrollController.position.userScrollDirection ==
                         ScrollDirection.forward &&
-                    cubit.state.searchCollapsed) {
-                  cubit.showSearch();
+                    bloc.state.searchCollapsed) {
+                  bloc.add(SearchCollapseChangeEvent(false));
                 } else {
-                  if (!cubit.state.searchCollapsed &&
+                  if (!bloc.state.searchCollapsed &&
                       scrollController.position.userScrollDirection ==
                           ScrollDirection.reverse) {
-                    cubit.hideSearch();
+                    bloc.add(SearchCollapseChangeEvent(true));
                   }
                 }
                 return true;
@@ -71,35 +62,38 @@ class HomePage extends StatelessWidget {
                           child: Hero(
                             tag: "search",
                             child: BlocProvider.value(
-                              value: BlocProvider.of<HomePageCubit>(context),
+                              value: BlocProvider.of<HomePageBloc>(context),
                               child: AnimatedSearch(
                                 onPress: () {
                                   Navigator.push(
                                     context,
                                     PageRouteBuilder(
-                                      transitionDuration:
-                                          Duration(milliseconds: 250),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        const curve = Curves.ease;
+                                        transitionDuration:
+                                            const Duration(milliseconds: 250),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          const curve = Curves.ease;
 
-                                        var tween = Tween<double>(
-                                                begin: 0.0, end: 1.0)
-                                            .chain(CurveTween(curve: curve));
+                                          var tween = Tween<double>(
+                                                  begin: 0.0, end: 1.0)
+                                              .chain(CurveTween(curve: curve));
 
-                                        return FadeTransition(
-                                          opacity: animation.drive(tween),
-                                          child: FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          ),
-                                        );
-                                      },
-                                      pageBuilder: (context, animation,
-                                              secondaryAnimation) =>
-                                          SearchPage(),
-                                    ),
-                                  );
+                                          return FadeTransition(
+                                            opacity: animation.drive(tween),
+                                            child: FadeTransition(
+                                              opacity: animation,
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                        pageBuilder: (_, animation,
+                                                secondaryAnimation) =>
+                                            BlocProvider.value(
+                                              value: BlocProvider.of<
+                                                  HomePageBloc>(context),
+                                              child: SearchPage(),
+                                            )),
+                                  ).whenComplete(() {});
                                 },
                               ),
                             ),
@@ -107,8 +101,13 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       SliverPadding(
-                          padding: EdgeInsets.symmetric(horizontal: 2),
-                          sliver: AnimatedSliverList())
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        sliver: Builder(
+                          builder: (context) {
+                            return AnimatedSliverList();
+                          },
+                        ),
+                      )
                     ],
                   ),
                 ),

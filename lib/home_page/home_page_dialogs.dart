@@ -1,18 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
-import 'package:to_do_app/domain_layer/task_repository.dart';
+import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/utils/colors.dart';
 
-class DeleteionDialog extends StatelessWidget {
-  const DeleteionDialog(
-      {super.key, required this.rep, required this.task, required this.toast});
+class DeletionDialog extends StatelessWidget {
+  const DeletionDialog(
+      {super.key, required this.task, required this.toast, required this.bloc});
 
-  final TaskRepository rep;
   final TaskData task;
+  final HomePageBloc bloc;
   final FToast toast;
 
   @override
@@ -28,10 +26,8 @@ class DeleteionDialog extends StatelessWidget {
         ),
         CupertinoDialogAction(
           child: const Text("Delete"),
-          onPressed: () async {
-            await rep
-                .updateTask(task.copyWith(archieved: true).toCompanion(true));
-            if (!context.mounted) return;
+          onPressed: () {
+            bloc.add(TaskUpdateEvent(task.copyWith(archieved: true)));
             Navigator.of(context).pop();
             FToast().removeCustomToast();
             toast.showToast(
@@ -64,9 +60,8 @@ class DeleteionDialog extends StatelessWidget {
                             style: TextStyle(color: Color(green)),
                           ),
                           onPressed: () {
-                            rep.updateTask(task
-                                .copyWith(archieved: false)
-                                .toCompanion(true));
+                            bloc.add(TaskUpdateEvent(
+                                task.copyWith(archieved: false)));
                             FToast().removeCustomToast();
                           })
                     ],
@@ -76,9 +71,8 @@ class DeleteionDialog extends StatelessWidget {
         ),
         CupertinoDialogAction(
           child: const Text("Delete forever"),
-          onPressed: () async {
-            await rep.deleteTask(task.id);
-            if (!context.mounted) return;
+          onPressed: () {
+            bloc.add(TaskDeleteEvent(task.id));
             Navigator.of(context).pop();
             FToast().removeCustomToast();
             toast.showToast(
@@ -111,9 +105,7 @@ class DeleteionDialog extends StatelessWidget {
                             style: TextStyle(color: Color(green)),
                           ),
                           onPressed: () {
-                            rep.addTask(task
-                                .copyWith(archieved: false)
-                                .toCompanion(true));
+                            bloc.add(TaskAddEvent(task));
                             FToast().removeCustomToast();
                           })
                     ],

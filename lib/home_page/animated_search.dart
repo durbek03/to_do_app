@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do_app/home_page/cubit/home_page_cubit.dart';
+import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 class AnimatedSearch extends StatelessWidget {
@@ -10,9 +10,9 @@ class AnimatedSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = BlocProvider.of<HomePageCubit>(context);
+    var cubit = BlocProvider.of<HomePageBloc>(context);
     context.select(
-      (HomePageCubit value) {
+      (HomePageBloc value) {
         return value.state.searchCollapsed;
       },
     );
