@@ -9,12 +9,12 @@ class TaskRepository {
     getDao().addTask(entry);
   }
 
-  updateTask(TaskCompanion entry) {
-    getDao().updateTask(entry);
+  Future updateTask(TaskCompanion entry) {
+    return getDao().updateTask(entry);
   }
 
-  deleteTask(int id) {
-    getDao().deleteTask(id);
+  Future deleteTask(int id) {
+    return getDao().deleteTask(id);
   }
 
   Stream<List<TaskData>> watchUncompletedTasks() {

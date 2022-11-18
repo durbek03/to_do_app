@@ -6,5 +6,5 @@ class Task extends Table {
   TextColumn get description => text().withLength(min: 1)();
   DateTimeColumn get date => dateTime()();
   BoolColumn get completed => boolean().withDefault(const Constant(false))();
-  BoolColumn get archieved => boolean().withDefault(const Constant(true))();
+  BoolColumn get archieved => boolean().withDefault(const Constant(false))();
 }

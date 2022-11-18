@@ -6,8 +6,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
+import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/slidable_list_item.dart';
-import 'package:to_do_app/utils/colors.dart';
+import 'package:to_do_app/utils/widgets.dart';
 
 import 'cubit/home_page_cubit.dart';
 
@@ -17,7 +18,9 @@ class AnimatedSliverList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.select((HomePageCubit cubit) => cubit.state.unCompletedTasks);
+    var toast = RepositoryProvider.of<FToast>(context);
     var cubit = BlocProvider.of<HomePageCubit>(context);
+
     return cubit.state.unCompletedTasks.isEmpty
         ? const SliverToBoxAdapter(child: Text("No data to show"))
         : DiffUtilSliverList<TaskData>(
@@ -28,15 +31,15 @@ class AnimatedSliverList extends StatelessWidget {
                 child: SlidableListItem(
                   task: task,
                   completeClick: () {
-                    var cubit = BlocProvider.of<HomePageCubit>(context);
-                    var fToast = RepositoryProvider.of<FToast>(context);
-
-                    cubit.completeTask(task);
+                    _showCompleteDialog(context, task);
                   },
                   deleteClick: () {
-                    var cubit = BlocProvider.of<HomePageCubit>(context);
-
-                    cubit.deleteTask(task.id);
+                    showCupertinoDialog(
+                        context: context,
+                        builder: (_) => DeleteionDialog(
+                            rep: RepositoryProvider.of(context),
+                            task: task,
+                            toast: toast));
                   },
                 ),
               );
@@ -56,6 +59,31 @@ class AnimatedSliverList extends StatelessWidget {
               ),
             ),
           );
-    ;
+  }
+
+  void _showCompleteDialog(BuildContext bContext, TaskData task) {
+    showCupertinoDialog(
+      context: bContext,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text("Press confirm to complete task"),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: const Text("Confirm"),
+              onPressed: () {
+                BlocProvider.of<HomePageCubit>(context).completeTask(task);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

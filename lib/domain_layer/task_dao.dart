@@ -12,15 +12,17 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
     into(task).insert(entry);
   }
 
-  updateTask(TaskCompanion entry) {
-    update(task).replace(entry);
+  Future updateTask(TaskCompanion entry) {
+    return update(task).replace(entry);
   }
 
-  deleteTask(int id) {
-    (delete(task)..where((tbl) => tbl.id.equals(id))).go();
+  Future deleteTask(int id) {
+    return (delete(task)..where((tbl) => tbl.id.equals(id))).go();
   }
 
   Stream<List<TaskData>> watchUncompletedTasks() {
-    return (select(task)..where((tbl) => tbl.completed.equals(false))..orderBy([(table) => OrderingTerm.asc(table.date)])).watch();
+    return (select(task)..where((tbl) {
+      return tbl.completed.equals(false) & tbl.archieved.equals(false);
+    })..orderBy([(table) => OrderingTerm.asc(table.date)])).watch();
   }
 }
