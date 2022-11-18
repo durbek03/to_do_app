@@ -1,6 +1,7 @@
 import 'package:diffutil_sliverlist/diffutil_sliverlist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/home_page/home_page_dialogs.dart';
@@ -17,7 +18,7 @@ class SearchAnimatedSliverList extends StatelessWidget {
     var bloc = BlocProvider.of<HomePageBloc>(context);
     var list = bloc.state.searchResult;
 
-    return list.isEmpty
+    var page = list.isEmpty
         ? SliverPadding(
             padding: const EdgeInsets.only(top: 50),
             sliver: SliverToBoxAdapter(
@@ -72,6 +73,7 @@ class SearchAnimatedSliverList extends StatelessWidget {
               ),
             ),
           );
+          return SliverAnimatedSwitcher(duration: const Duration(milliseconds: 200), child: page);
   }
 
   void _showCompleteDialog(

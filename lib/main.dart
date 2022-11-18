@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:to_do_app/archive_page/archive_page.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/home_page.dart';
@@ -19,7 +20,6 @@ class RootApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      theme: CupertinoThemeData(),
       home: Builder(builder: (context) {
         //Injecting repositories
         return MultiRepositoryProvider(
@@ -38,6 +38,9 @@ class RootApp extends StatelessWidget {
           child: CupertinoTabScaffold(
             resizeToAvoidBottomInset: false,
             tabBar: CupertinoTabBar(
+              onTap: (value) {
+                
+              },
               height: 80,
               backgroundColor: Color(bottomNavBarColor),
               activeColor: Color(green),
@@ -80,13 +83,14 @@ class RootApp extends StatelessWidget {
               ],
             ),
             tabBuilder: (context, value) {
+              print("building");
               late Widget page;
               if (value == 0) {
                 page = HomePage();
               } else if (value == 1) {
                 page = AddPage();
               } else if (value == 2) {
-                page = LogScreen();
+                page = ArchivePage();
               }
               return page;
             },
@@ -119,17 +123,6 @@ class RootApp extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class LogScreen extends StatelessWidget {
-  const LogScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.amber,
     );
   }
 }

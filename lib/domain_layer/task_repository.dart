@@ -21,6 +21,14 @@ class TaskRepository {
     return getDao().watchUncompletedTasks();
   }
 
+  Stream<List<TaskData>> watchCompletedTasks() {
+    return getDao().watchCompletedTasks();
+  }
+
+  Stream<List<TaskData>> watchArchievedTasks() {
+    return getDao().watchArchievedTasks();
+  }
+
   Future<List<TaskData>> searchTask(String entry) {
     return getDao().searchTask(entry);
   }

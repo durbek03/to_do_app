@@ -22,10 +22,15 @@ class _AddPageState extends State<AddPage> {
   DateTime selectedDate = DateTime.now();
   final DateFormat formatter = DateFormat('dd.MM.yyyy');
 
+  Color textColor = const Color.fromARGB(255, 78, 78, 78);
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      backgroundColor: Color(grey200),
       navigationBar: CupertinoNavigationBar(
+        border: null,
+        backgroundColor: Color(grey200),
         middle: Text(
           "Add task",
           style: TextStyle(color: Color(green700)),
@@ -37,8 +42,7 @@ class _AddPageState extends State<AddPage> {
           child: Column(
             children: [
               CupertinoTextField(
-                placeholderStyle: TextStyle(color: Color(grey200)),
-                style: TextStyle(color: Color(grey200)),
+                style: TextStyle(color: textColor),
                 controller: titleController,
                 decoration: _getTextFieldDecoration(),
                 placeholder: "Task title",
@@ -46,11 +50,10 @@ class _AddPageState extends State<AddPage> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
+              SizedBox(
                 height: 250,
                 child: CupertinoTextField(
-                  placeholderStyle: TextStyle(color: Color(grey200)),
-                  style: TextStyle(color: Color(grey200)),
+                  style: TextStyle(color: textColor),
                   controller: descrController,
                   textAlignVertical: TextAlignVertical.top,
                   maxLines: null,
@@ -72,7 +75,7 @@ class _AddPageState extends State<AddPage> {
       children: [
         Expanded(
             child: ActionButton(
-          title: formatter.format(selectedDate),
+          title: "Due to: ${formatter.format(selectedDate)}",
           color: Color(red),
           onTap: () {
             _showDialog(
@@ -92,7 +95,7 @@ class _AddPageState extends State<AddPage> {
         const SizedBox(width: 10),
         Expanded(
           child: ActionButton(
-            title: "Save",
+            title: "Add to do list",
             color: Color(green),
             onTap: () {
               FocusManager.instance.primaryFocus!.unfocus();
@@ -119,7 +122,7 @@ class _AddPageState extends State<AddPage> {
 
   BoxDecoration _getTextFieldDecoration() {
     return BoxDecoration(
-        border: Border.all(width: 1, color: Color(grey500)),
+        border: Border.all(width: 1, color: Color(grey700)),
         borderRadius: BorderRadius.circular(5));
   }
 
@@ -130,7 +133,7 @@ class _AddPageState extends State<AddPage> {
     var toast = Container(
       decoration: BoxDecoration(
           color: Color(grey500), borderRadius: BorderRadius.circular(5)),
-      padding: EdgeInsets.all(15),
+      padding: const EdgeInsets.all(15),
       child: Text(
         message,
       ),
