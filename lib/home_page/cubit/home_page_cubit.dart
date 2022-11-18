@@ -7,7 +7,10 @@ import 'package:to_do_app/domain_layer/task_repository.dart';
 part 'home_page_state.dart';
 
 class HomePageCubit extends Cubit<HomePageState> {
-  HomePageCubit(this.rep) : super(HomePageState(true, List.empty())) {
+  HomePageCubit(this.rep)
+      : super(HomePageState(
+            searchCollapsed: true,
+            unCompletedTasks: List.empty(),)) {
     watchTasks();
   }
   final TaskRepository rep;

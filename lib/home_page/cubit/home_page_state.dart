@@ -5,15 +5,20 @@ class HomePageState {
   bool searchCollapsed;
   List<TaskData> unCompletedTasks;
 
-  HomePageState(this.searchCollapsed, this.unCompletedTasks);
+  HomePageState({
+    required this.searchCollapsed,
+    required this.unCompletedTasks,
+  });
 
   HomePageState copyWith({
     bool? searchCollapsed,
     List<TaskData>? unCompletedTasks,
+    String? search,
+    List<TaskData>? searchResult,
   }) {
     return HomePageState(
-      searchCollapsed ?? this.searchCollapsed,
-      unCompletedTasks ?? this.unCompletedTasks,
+      searchCollapsed: searchCollapsed ?? this.searchCollapsed,
+      unCompletedTasks: unCompletedTasks ?? this.unCompletedTasks,
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/animated_search.dart';
 import 'package:to_do_app/home_page/animated_list.dart';
 import 'package:to_do_app/home_page/cubit/home_page_cubit.dart';
+import 'package:to_do_app/home_page/cubit/search_cubit.dart';
 import 'package:to_do_app/home_page/search_page.dart';
 import 'package:to_do_app/utils/colors.dart';
 
@@ -17,9 +18,15 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     //injecting home page cubit
     return CupertinoTabView(
-      builder: (context) => BlocProvider(
-        create: (context) =>
-            HomePageCubit(RepositoryProvider.of<TaskRepository>(context)),
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => HomePageCubit(RepositoryProvider.of(context)),
+          ),
+          BlocProvider(
+            create: (context) => SearchCubit(RepositoryProvider.of(context)),
+          )
+        ],
         child: Builder(builder: (context) {
           return CupertinoPageScaffold(
             backgroundColor: Color(grey200),
@@ -58,7 +65,8 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 2, vertical: 10),
                         sliver: SliverToBoxAdapter(
                           child: Hero(
                             tag: "search",
@@ -68,8 +76,28 @@ class HomePage extends StatelessWidget {
                                 onPress: () {
                                   Navigator.push(
                                     context,
-                                    CupertinoPageRoute(
-                                      builder: (context) => SearchPage(),
+                                    PageRouteBuilder(
+                                      transitionDuration:
+                                          Duration(milliseconds: 250),
+                                      transitionsBuilder: (context, animation,
+                                          secondaryAnimation, child) {
+                                        const curve = Curves.ease;
+
+                                        var tween = Tween<double>(
+                                                begin: 0.0, end: 1.0)
+                                            .chain(CurveTween(curve: curve));
+
+                                        return FadeTransition(
+                                          opacity: animation.drive(tween),
+                                          child: FadeTransition(
+                                            opacity: animation,
+                                            child: child,
+                                          ),
+                                        );
+                                      },
+                                      pageBuilder: (context, animation,
+                                              secondaryAnimation) =>
+                                          SearchPage(),
                                     ),
                                   );
                                 },
