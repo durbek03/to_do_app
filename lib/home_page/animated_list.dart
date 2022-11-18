@@ -1,12 +1,8 @@
 import 'package:diffutil_sliverlist/diffutil_sliverlist.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
-import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/home_page/slidable_list_item.dart';
 import 'package:to_do_app/utils/widgets.dart';
 
