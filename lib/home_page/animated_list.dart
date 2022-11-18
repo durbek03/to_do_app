@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:to_do_app/detail_page/detail_page.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/home_page/home_page_dialogs.dart';
@@ -43,19 +44,45 @@ class AnimatedSliverList extends StatelessWidget {
             builder: (p0, task) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: SlidableListItem(
-                  task: task,
-                  completeClick: () {
-                    _showCompleteDialog(context, task, bloc);
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration: const Duration(milliseconds: 250),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const curve = Curves.ease;
+
+                            var tween = Tween<double>(begin: 0.0, end: 1.0)
+                                .chain(CurveTween(curve: curve));
+
+                            return FadeTransition(
+                              opacity: animation.drive(tween),
+                              child: FadeTransition(
+                                opacity: animation,
+                                child: child,
+                              ),
+                            );
+                          },
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                                return DetailPage(task: task, rep: RepositoryProvider.of(context));
+                              },
+                        ));
                   },
-                  deleteClick: () {
-                    showCupertinoDialog(
-                        context: context,
-                        builder: (_) => DeletionDialog(
-                            bloc: bloc,
-                            task: task,
-                            toast: toast));
-                  },
+                  child: SlidableListItem(
+                    task: task,
+                    completeClick: () {
+                      _showCompleteDialog(context, task, bloc);
+                    },
+                    deleteClick: () {
+                      showCupertinoDialog(
+                          context: context,
+                          builder: (_) => DeletionDialog(
+                              bloc: bloc, task: task, toast: toast));
+                    },
+                  ),
                 ),
               );
             },
@@ -74,7 +101,8 @@ class AnimatedSliverList extends StatelessWidget {
               ),
             ),
           );
-          return SliverAnimatedSwitcher(duration: const Duration(milliseconds: 200), child: page);
+    return SliverAnimatedSwitcher(
+        duration: const Duration(milliseconds: 200), child: page);
   }
 
   void _showCompleteDialog(

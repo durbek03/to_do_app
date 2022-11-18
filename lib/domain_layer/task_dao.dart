@@ -25,21 +25,21 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
           ..where((tbl) {
             return tbl.completed.equals(false) & tbl.archieved.equals(false);
           })
-          ..orderBy([(table) => OrderingTerm.asc(table.date)]))
+          ..orderBy([(table) => OrderingTerm.desc(table.date)]))
         .watch();
   }
 
   Stream<List<TaskData>> watchCompletedTasks() {
     return (select(task)
           ..where((tbl) => tbl.completed.equals(true))
-          ..orderBy([(table) => OrderingTerm.asc(table.date)]))
+          ..orderBy([(table) => OrderingTerm.desc(table.date)]))
         .watch();
   }
 
   Stream<List<TaskData>> watchArchievedTasks() {
     return (select(task)
           ..where((tbl) => tbl.archieved.equals(true))
-          ..orderBy([(table) => OrderingTerm.asc(table.date)]))
+          ..orderBy([(table) => OrderingTerm.desc(table.date)]))
         .watch();
   }
 
@@ -49,7 +49,7 @@ class TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {
               tbl.title.like("%${entry}%") &
               tbl.archieved.equals(false) &
               tbl.completed.equals(false))
-          ..orderBy([(table) => OrderingTerm.asc(table.date)]))
+          ..orderBy([(table) => OrderingTerm.desc(table.date)]))
         .get();
   }
 }

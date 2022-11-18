@@ -26,44 +26,49 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: Color(grey200),
-      navigationBar: CupertinoNavigationBar(
-        border: null,
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus!.unfocus();
+      },
+      child: CupertinoPageScaffold(
         backgroundColor: Color(grey200),
-        middle: Text(
-          "Add task",
-          style: TextStyle(color: Color(green700)),
+        navigationBar: CupertinoNavigationBar(
+          border: null,
+          backgroundColor: Color(grey200),
+          middle: Text(
+            "Add task",
+            style: TextStyle(color: Color(green700)),
+          ),
         ),
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Column(
-            children: [
-              CupertinoTextField(
-                style: TextStyle(color: textColor),
-                controller: titleController,
-                decoration: _getTextFieldDecoration(),
-                placeholder: "Task title",
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: 250,
-                child: CupertinoTextField(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: Column(
+              children: [
+                CupertinoTextField(
                   style: TextStyle(color: textColor),
-                  controller: descrController,
-                  textAlignVertical: TextAlignVertical.top,
-                  maxLines: null,
-                  placeholder: "Task description",
+                  controller: titleController,
                   decoration: _getTextFieldDecoration(),
+                  placeholder: "Task title",
                 ),
-              ),
-              const SizedBox(height: 10),
-              _getActionButtons(context)
-            ],
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 250,
+                  child: CupertinoTextField(
+                    style: TextStyle(color: textColor),
+                    controller: descrController,
+                    textAlignVertical: TextAlignVertical.top,
+                    maxLines: null,
+                    placeholder: "Task description",
+                    decoration: _getTextFieldDecoration(),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _getActionButtons(context)
+              ],
+            ),
           ),
         ),
       ),
@@ -81,6 +86,7 @@ class _AddPageState extends State<AddPage> {
             _showDialog(
               context,
               CupertinoDatePicker(
+                minimumDate: DateTime.now(),
                 mode: CupertinoDatePickerMode.date,
                 onDateTimeChanged: (value) {
                   setState(() {
