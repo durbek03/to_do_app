@@ -7,7 +7,7 @@ import 'package:to_do_app/detail_page/detail_page.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/home_page/home_page_dialogs.dart';
-import 'package:to_do_app/home_page/slidable_list_item.dart';
+import 'package:to_do_app/home_page/home_page_list_item.dart';
 import 'package:to_do_app/utils/app_animations.dart';
 import 'package:to_do_app/utils/colors.dart';
 
@@ -59,12 +59,11 @@ class AnimatedSliverList extends StatelessWidget {
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
                             return DetailPage(
-                                task: task,
-                                rep: RepositoryProvider.of(context));
+                                taskId: task.id);
                           },
                         ));
                   },
-                  child: SlidableListItem(
+                  child: HomePageListItem(
                     task: task,
                     completeClick: () {
                       showCupertinoDialog(context: context, builder: (_) => CompletionDialog(bloc: bloc, task: task));

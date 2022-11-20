@@ -8,7 +8,8 @@ import 'package:to_do_app/home_page/home_page_dialogs.dart';
 import 'package:to_do_app/utils/app_animations.dart';
 import 'package:to_do_app/utils/colors.dart';
 
-import '../slidable_list_item.dart';
+import '../../detail_page/detail_page.dart';
+import '../home_page_list_item.dart';
 
 class SearchAnimatedSliverList extends StatelessWidget {
   const SearchAnimatedSliverList({super.key});
@@ -43,19 +44,41 @@ class SearchAnimatedSliverList extends StatelessWidget {
             builder: (p0, task) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: SlidableListItem(
-                  task: task,
-                  completeClick: () {
-                    showCupertinoDialog(context: context, builder: (_) => CompletionDialog(bloc: bloc, task: task));
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 250),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return AppAnimations.routeNavigationAnim(
+                              animation, child);
+                        },
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          return DetailPage(
+                              taskId: task.id);
+                        },
+                      ),
+                    );
                   },
-                  deleteClick: () {
-                    showCupertinoDialog(
-                        context: context,
-                        builder: (_) => DeletionDialog(
-                            task: task,
-                            toast: RepositoryProvider.of(context),
-                            bloc: bloc));
-                  },
+                  child: HomePageListItem(
+                    task: task,
+                    completeClick: () {
+                      showCupertinoDialog(
+                          context: context,
+                          builder: (_) =>
+                              CompletionDialog(bloc: bloc, task: task));
+                    },
+                    deleteClick: () {
+                      showCupertinoDialog(
+                          context: context,
+                          builder: (_) => DeletionDialog(
+                              task: task,
+                              toast: RepositoryProvider.of(context),
+                              bloc: bloc));
+                    },
+                  ),
                 ),
               );
             },

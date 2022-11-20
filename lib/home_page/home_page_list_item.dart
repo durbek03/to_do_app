@@ -7,33 +7,23 @@ import 'package:to_do_app/utils/util_widgets.dart';
 
 import '../domain_layer/app_database.dart';
 
-class SlidableListItem extends StatelessWidget {
-  SlidableListItem(
+class HomePageListItem extends StatelessWidget {
+  HomePageListItem(
       {super.key,
       required this.task,
       required this.completeClick,
       required this.deleteClick});
 
   final TaskData task;
-  final DateFormat formatter = DateFormat('dd.MM.yyyy');
   final Function completeClick;
   final Function deleteClick;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 20),
-      height: 90,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: Colors.white,
-        boxShadow: [
-          UtilWidgets.shadow,
-        ],
-      ),
-      child: Slidable(   
+    return UtilWidgets.listItemContainer(
+      Slidable(
         endActionPane: ActionPane(
-          extentRatio: 2 / 3,
+          extentRatio: 3 / 5,
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
@@ -48,7 +38,9 @@ class SlidableListItem extends StatelessWidget {
             ),
             Builder(builder: (context) {
               return SlidableAction(
-                borderRadius: const BorderRadius.only(topRight: Radius.circular(5), bottomRight: Radius.circular(5)),
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(5),
+                    bottomRight: Radius.circular(5)),
                 spacing: 10,
                 onPressed: (context) {
                   deleteClick.call();
@@ -61,25 +53,7 @@ class SlidableListItem extends StatelessWidget {
             }),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              "• ${task.title}",
-              style: TextStyle(
-                  color: Color(green700),
-                  fontSize: 18,
-                  overflow: TextOverflow.clip),
-              maxLines: 1,
-            ),
-            const SizedBox(height: 5),
-            Text(
-              "Due to: ${formatter.format(task.date)}",
-              style: TextStyle(fontSize: 15, color: Color(grey700)),
-            )
-          ],
-        ),
+        child: UtilWidgets.listItemContent(task),
       ),
     );
   }

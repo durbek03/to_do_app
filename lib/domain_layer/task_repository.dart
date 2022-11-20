@@ -33,6 +33,10 @@ class TaskRepository {
     return getDao().searchTask(entry);
   }
 
+  Stream<TaskData> watchTask(int id) {
+    return getDao().watchTask(id);
+  }
+
   TaskDao getDao() {
     return db.taskDao;
   }

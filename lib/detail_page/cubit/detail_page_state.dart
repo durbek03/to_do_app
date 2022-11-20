@@ -2,15 +2,15 @@
 part of 'detail_page_cubit.dart';
 
 class DetailPageState {
-  final bool slideOpen;
+  final TaskData? task;
 
-  DetailPageState({required this.slideOpen});
+  const DetailPageState({this.task});
 
   DetailPageState copyWith({
-    bool? slideOpen,
+    TaskData? task,
   }) {
     return DetailPageState(
-      slideOpen: slideOpen ?? this.slideOpen,
+      task: task ?? this.task,
     );
   }
 }

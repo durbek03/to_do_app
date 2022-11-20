@@ -11,50 +11,54 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var bloc = BlocProvider.of<HomePageBloc>(context);
-    return CupertinoPageScaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Color(grey200),
-      navigationBar: CupertinoNavigationBar(
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus!.unfocus();
+      },
+      child: CupertinoPageScaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Color(grey200),
-        border: null,
-        middle: Text(
-          "Search",
-          style: TextStyle(color: Color(green700)),
+        navigationBar: CupertinoNavigationBar(
+          backgroundColor: Color(grey200),
+          border: null,
+          middle: Text(
+            "Search",
+            style: TextStyle(color: Color(green700)),
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-        child: Column(
-          children: [
-            Hero(
-              tag: "search",
-              child: SizedBox(
-                height: 40,
-                child: CupertinoSearchTextField(
-                  onChanged: (value) {
-                    bloc.add(SearchEvent(value));
-                  },
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Color(grey500),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          child: Column(
+            children: [
+              Hero(
+                tag: "search",
+                child: SizedBox(
+                  height: 40,
+                  child: CupertinoSearchTextField(
+                    onChanged: (value) {
+                      bloc.add(SearchEvent(value));
+                    },
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Color(grey500),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            const Expanded(
-              child: SlidableAutoCloseBehavior(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverPadding(
-                      padding: EdgeInsets.all(2),
-                      sliver: SearchAnimatedSliverList()
-                    )
-                  ],
+              const SizedBox(height: 10),
+              const Expanded(
+                child: SlidableAutoCloseBehavior(
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverPadding(
+                          padding: EdgeInsets.all(2),
+                          sliver: SearchAnimatedSliverList())
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

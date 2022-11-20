@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 class AppAnimations {
-  static FadeTransition Function(Animation<double> animation, Widget child) get routeNavigationAnim => (animation, child) {
+  static FadeTransition routeNavigationAnim(
+      Animation<double> animation, Widget child) {
     const curve = Curves.ease;
 
     var tween =
@@ -14,16 +15,17 @@ class AppAnimations {
         child: child,
       ),
     );
-  };
+  }
 
-  static FadeTransition Function(Animation<double> animation, Widget child) get listItemRemoveAnim => (animation, child) {
+  static FadeTransition listItemRemoveAnim(
+      Animation<double> animation, Widget child) {
     return FadeTransition(
-              opacity: animation,
-              child: SizeTransition(
-                sizeFactor: animation,
-                axisAlignment: 0,
-                child: child,
-              ),
-            );
-  };
+      opacity: animation,
+      child: SizeTransition(
+        sizeFactor: animation,
+        axisAlignment: 0,
+        child: child,
+      ),
+    );
+  }
 }

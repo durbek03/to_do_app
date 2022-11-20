@@ -77,37 +77,19 @@ class DeletionDialog extends StatelessWidget {
             Navigator.of(context).pop();
             FToast().removeCustomToast();
             toast.showToast(
-                positionedToastBuilder: (context, child) => Positioned(
-                      bottom: 50,
-                      left: 0,
-                      right: 0,
-                      child: child,
-                    ),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Color(grey200),
-                      borderRadius: BorderRadius.circular(5),
-                      boxShadow: [
-                        UtilWidgets.shadow,
-                      ]),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 10),
-                      const Text("Successfully deleted "),
-                      CupertinoButton(
-                          child: Text(
-                            "Restore",
-                            style: TextStyle(color: Color(green)),
-                          ),
-                          onPressed: () {
-                            bloc.add(TaskAddEvent(task));
-                            FToast().removeCustomToast();
-                          })
-                    ],
-                  ),
-                ));
+              positionedToastBuilder: (context, child) => Positioned(
+                bottom: 50,
+                left: 0,
+                right: 0,
+                child: child,
+              ),
+              child: UtilWidgets.restoreToast(
+                () {
+                  bloc.add(TaskAddEvent(task));
+                  FToast().removeCustomToast();
+                },
+              ),
+            );
           },
         ),
       ],
@@ -124,22 +106,22 @@ class CompletionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-          title: const Text("Press confirm to complete task"),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            CupertinoDialogAction(
-              child: const Text("Confirm"),
-              onPressed: () {
-                bloc.add(TaskUpdateEvent(task.copyWith(completed: true)));
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+      title: const Text("Press confirm to complete task"),
+      actions: [
+        CupertinoDialogAction(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        CupertinoDialogAction(
+          child: const Text("Confirm"),
+          onPressed: () {
+            bloc.add(TaskUpdateEvent(task.copyWith(completed: true)));
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
   }
 }
