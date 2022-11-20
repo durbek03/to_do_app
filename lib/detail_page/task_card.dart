@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
+import 'package:to_do_app/domain_layer/task_repository.dart';
+import 'package:to_do_app/edit_page/edit_page.dart';
+import 'package:to_do_app/utils/app_animations.dart';
 import 'package:to_do_app/utils/colors.dart';
 import 'package:to_do_app/utils/util_widgets.dart';
 
@@ -16,6 +21,7 @@ class TaskDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final rep = RepositoryProvider.of<TaskRepository>(context);
     return SingleChildScrollView(
       child: Slidable(
         direction: Axis.horizontal,
@@ -29,7 +35,35 @@ class TaskDetailCard extends StatelessWidget {
                 children: [
                   if (task.archieved)
                     DetailAction(
-                      onTap: () {},
+                      onTap: () {
+                        showCupertinoDialog(
+                            context: context,
+                            builder: (dContext) {
+                              return CupertinoAlertDialog(
+                                title: const Text("Restore task"),
+                                actions: [
+                                  CupertinoDialogAction(
+                                    child: const Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.of(dContext).pop();
+                                    },
+                                  ),
+                                  CupertinoDialogAction(
+                                    child: const Text("Confirm"),
+                                    onPressed: () {
+                                      rep.updateTask(task
+                                          .copyWith(archieved: false)
+                                          .toCompanion(true));
+                                      Navigator.of(dContext).pop();
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                        rep.updateTask(
+                            task.copyWith(archieved: false).toCompanion(true));
+                      },
                       title: "Restore",
                       icon: const Icon(
                         Icons.restore,
@@ -39,7 +73,10 @@ class TaskDetailCard extends StatelessWidget {
                     ),
                   if (!task.completed && !task.archieved)
                     DetailAction(
-                      onTap: () {},
+                      onTap: () {
+                        rep.updateTask(
+                            task.copyWith(completed: true).toCompanion(true));
+                      },
                       title: "Complete",
                       icon: const Icon(
                         Icons.check,
@@ -49,7 +86,21 @@ class TaskDetailCard extends StatelessWidget {
                     ),
                   if (!task.completed)
                     DetailAction(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return AppAnimations.routeNavigationAnim(
+                                    animation, child);
+                              },
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return EditPage();
+                              },
+                            ),
+                          );
+                        },
                         title: "Edit",
                         icon: const Icon(
                           Icons.edit,
@@ -58,7 +109,20 @@ class TaskDetailCard extends StatelessWidget {
                         color: Colors.amber),
                   if (!task.completed)
                     DetailAction(
-                        onTap: () {},
+                        onTap: () {
+                          showCupertinoDialog(
+                              context: context,
+                              builder: (_) {
+                                return _DeletionDialog(
+                                  rep: rep,
+                                  task: task,
+                                  toast: RepositoryProvider.of(context),
+                                  onDelete: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              });
+                        },
                         title: "Delete",
                         icon: const Icon(
                           Icons.delete,
@@ -84,8 +148,12 @@ class TaskDetailCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
+                    decoration: BoxDecoration(
+                        color: Color(grey700),
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            topRight: Radius.circular(5))),
                     padding: const EdgeInsets.only(right: 20),
-                    color: Color(grey700),
                     height: 80,
                     alignment: Alignment.centerRight,
                     child: ClipRRect(
@@ -138,6 +206,77 @@ class TaskDetailCard extends StatelessWidget {
         ),
       ),
     );
-    ;
+  }
+}
+
+class _DeletionDialog extends StatelessWidget {
+  const _DeletionDialog(
+      {super.key,
+      required this.rep,
+      required this.task,
+      required this.toast,
+      required this.onDelete});
+
+  final TaskRepository rep;
+  final TaskData task;
+  final FToast toast;
+  final Function onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+      title: Text(task.archieved
+          ? "This task will be deleted permanently"
+          : "Are you sure to delete task"),
+      actions: [
+        CupertinoDialogAction(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        if (!task.archieved)
+          CupertinoDialogAction(
+            child: const Text("Delete"),
+            onPressed: () {
+              rep.updateTask(task.copyWith(archieved: true).toCompanion(true));
+              Navigator.of(context).pop();
+              onDelete.call();
+              FToast().removeCustomToast();
+              toast.showToast(
+                positionedToastBuilder: (context, child) => Positioned(
+                    bottom: 100, top: 0, left: 0, right: 0, child: child),
+                gravity: ToastGravity.CENTER,
+                child: UtilWidgets.restoreToast(
+                  () {
+                    rep.updateTask(
+                        task.copyWith(archieved: false).toCompanion(true));
+                    FToast().removeCustomToast();
+                  },
+                ),
+              );
+            },
+          ),
+        CupertinoDialogAction(
+          child: Text(task.archieved ? "Delete" : "Delete forever"),
+          onPressed: () {
+            rep.deleteTask(task.id);
+            Navigator.of(context).pop();
+            onDelete.call();
+            FToast().removeCustomToast();
+            toast.showToast(
+              positionedToastBuilder: (context, child) =>
+                  Positioned(bottom: 100, left: 0, right: 0, child: child),
+              child: UtilWidgets.restoreToast(
+                () {
+                  rep.addTask(task.toCompanion(true));
+                  FToast().removeCustomToast();
+                },
+              ),
+            );
+          },
+        )
+      ],
+    );
   }
 }

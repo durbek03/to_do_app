@@ -54,6 +54,7 @@ class RootApp extends StatelessWidget {
             resizeToAvoidBottomInset: false,
             tabBar: CupertinoTabBar(
               onTap: (value) {
+                FToast().removeCustomToast();
                 if (currentIndex == 1 && value != 1) {
                   eventBus.fire(ClearAddPageDataEvent());
                 }
