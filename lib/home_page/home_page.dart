@@ -6,6 +6,7 @@ import 'package:to_do_app/home_page/animated_search.dart';
 import 'package:to_do_app/home_page/animated_list.dart';
 import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/home_page/search_page/search_page.dart';
+import 'package:to_do_app/utils/app_animations.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,6 +22,7 @@ class HomePage extends StatelessWidget {
         child: Builder(builder: (context) {
           var bloc = BlocProvider.of<HomePageBloc>(context);
           return CupertinoPageScaffold(
+            resizeToAvoidBottomInset: false,
             backgroundColor: Color(grey200),
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
@@ -64,7 +66,9 @@ class HomePage extends StatelessWidget {
                             child: BlocProvider.value(
                               value: BlocProvider.of<HomePageBloc>(context),
                               child: AnimatedSearch(
-                                onPress: () {
+                                onPress: () async {
+                                  //clearing search results before navigating
+                                  bloc.add(SearchEvent(""));
                                   Navigator.push(
                                     context,
                                     PageRouteBuilder(
@@ -72,28 +76,17 @@ class HomePage extends StatelessWidget {
                                             const Duration(milliseconds: 250),
                                         transitionsBuilder: (context, animation,
                                             secondaryAnimation, child) {
-                                          const curve = Curves.ease;
-
-                                          var tween = Tween<double>(
-                                                  begin: 0.0, end: 1.0)
-                                              .chain(CurveTween(curve: curve));
-
-                                          return FadeTransition(
-                                            opacity: animation.drive(tween),
-                                            child: FadeTransition(
-                                              opacity: animation,
-                                              child: child,
-                                            ),
-                                          );
+                                          return AppAnimations.routeNavigationAnim(animation, child);
                                         },
                                         pageBuilder: (_, animation,
                                                 secondaryAnimation) =>
                                             BlocProvider.value(
-                                              value: BlocProvider.of<
-                                                  HomePageBloc>(context),
+                                              value:
+                                                  BlocProvider.of<HomePageBloc>(
+                                                      context),
                                               child: SearchPage(),
                                             )),
-                                  ).whenComplete(() {});
+                                  );
                                 },
                               ),
                             ),

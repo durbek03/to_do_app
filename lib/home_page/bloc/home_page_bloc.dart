@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
-import 'package:to_do_app/domain_layer/task.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
 
 part 'home_page_event.dart';
@@ -27,7 +26,10 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
     on<SearchEvent>(
       (event, emit) async {
-        if (event.query.isEmpty) return;
+        if (event.query.trim().isEmpty) {
+          emit(state.copyWith(search: event.query, searchResult: List.empty()));
+          return;
+        }
         var result = await rep.searchTask(event.query);
         emit(state.copyWith(search: event.query, searchResult: result));
       },

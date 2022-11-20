@@ -8,6 +8,7 @@ import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/home_page/home_page_dialogs.dart';
 import 'package:to_do_app/home_page/slidable_list_item.dart';
+import 'package:to_do_app/utils/app_animations.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 class AnimatedSliverList extends StatelessWidget {
@@ -52,29 +53,21 @@ class AnimatedSliverList extends StatelessWidget {
                           transitionDuration: const Duration(milliseconds: 250),
                           transitionsBuilder:
                               (context, animation, secondaryAnimation, child) {
-                            const curve = Curves.ease;
-
-                            var tween = Tween<double>(begin: 0.0, end: 1.0)
-                                .chain(CurveTween(curve: curve));
-
-                            return FadeTransition(
-                              opacity: animation.drive(tween),
-                              child: FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              ),
-                            );
+                            return AppAnimations.routeNavigationAnim(
+                                animation, child);
                           },
                           pageBuilder:
                               (context, animation, secondaryAnimation) {
-                                return DetailPage(task: task, rep: RepositoryProvider.of(context));
-                              },
+                            return DetailPage(
+                                task: task,
+                                rep: RepositoryProvider.of(context));
+                          },
                         ));
                   },
                   child: SlidableListItem(
                     task: task,
                     completeClick: () {
-                      _showCompleteDialog(context, task, bloc);
+                      showCupertinoDialog(context: context, builder: (_) => CompletionDialog(bloc: bloc, task: task));
                     },
                     deleteClick: () {
                       showCupertinoDialog(
@@ -88,47 +81,12 @@ class AnimatedSliverList extends StatelessWidget {
             },
             insertAnimationBuilder: (context, animation, child) =>
                 FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+                  opacity: animation,
+                  child: child,
+                ),
             removeAnimationBuilder: (context, animation, child) =>
-                FadeTransition(
-              opacity: animation,
-              child: SizeTransition(
-                sizeFactor: animation,
-                axisAlignment: 0,
-                child: child,
-              ),
-            ),
-          );
+                AppAnimations.listItemRemoveAnim(animation, child));
     return SliverAnimatedSwitcher(
         duration: const Duration(milliseconds: 200), child: page);
-  }
-
-  void _showCompleteDialog(
-      BuildContext context, TaskData task, HomePageBloc bloc) {
-    showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: const Text("Press confirm to complete task"),
-          actions: [
-            CupertinoDialogAction(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            CupertinoDialogAction(
-              child: const Text("Confirm"),
-              onPressed: () {
-                bloc.add(TaskUpdateEvent(task.copyWith(completed: true)));
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

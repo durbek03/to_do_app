@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/home_page/bloc/home_page_bloc.dart';
 import 'package:to_do_app/utils/colors.dart';
+import 'package:to_do_app/utils/util_widgets.dart';
 
 class DeletionDialog extends StatelessWidget {
   const DeletionDialog(
@@ -86,12 +87,8 @@ class DeletionDialog extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Color(grey200),
                       borderRadius: BorderRadius.circular(5),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(0.0, 1.0), //(x,y)
-                          blurRadius: 3.0,
-                        ),
+                      boxShadow: [
+                        UtilWidgets.shadow,
                       ]),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -115,5 +112,34 @@ class DeletionDialog extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class CompletionDialog extends StatelessWidget {
+  const CompletionDialog({super.key, required this.bloc, required this.task});
+
+  final HomePageBloc bloc;
+  final TaskData task;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+          title: const Text("Press confirm to complete task"),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: const Text("Confirm"),
+              onPressed: () {
+                bloc.add(TaskUpdateEvent(task.copyWith(completed: true)));
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
   }
 }

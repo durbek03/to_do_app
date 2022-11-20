@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:to_do_app/utils/colors.dart';
+import 'package:to_do_app/utils/util_widgets.dart';
 
 import '../domain_layer/app_database.dart';
 
@@ -26,12 +27,8 @@ class SlidableListItem extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.grey,
-            offset: Offset(0.0, 1.0), //(x,y)
-            blurRadius: 3.0,
-          ),
+        boxShadow: [
+          UtilWidgets.shadow,
         ],
       ),
       child: Slidable(   

@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import '../utils/colors.dart';
+import 'package:to_do_app/utils/util_widgets.dart';
 
 class ActionButton extends StatelessWidget {
   const ActionButton(
@@ -19,12 +16,8 @@ class ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          offset: Offset(0.0, 1.0), //(x,y)
-          blurRadius: 3.0,
-        )
+      decoration: BoxDecoration(boxShadow: [
+        UtilWidgets.shadow
       ]),
       child: Material(
         color: color,

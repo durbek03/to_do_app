@@ -1,3 +1,4 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:to_do_app/add_page/action_button.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
+import 'package:to_do_app/global_events.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 class AddPage extends StatefulWidget {
@@ -26,6 +28,13 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
+    var eventBus = RepositoryProvider.of<EventBus>(context);
+    eventBus.on<ClearAddPageDataEvent>().listen((event) {
+      titleController.text = "";
+      descrController.text = "";
+      selectedDate = DateTime.now();
+    });
+
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus!.unfocus();
@@ -106,8 +115,8 @@ class _AddPageState extends State<AddPage> {
             onTap: () {
               FocusManager.instance.primaryFocus!.unfocus();
 
-              var title = titleController.text;
-              var descr = descrController.text;
+              var title = titleController.text.trim();
+              var descr = descrController.text.trim();
               var date = selectedDate;
 
               if (title.isEmpty || descr.isEmpty) {
@@ -118,6 +127,8 @@ class _AddPageState extends State<AddPage> {
                 rep.addTask(TaskCompanion.insert(
                     title: title, description: descr, date: date));
                 _showToast("Successfully saved", context);
+                var eventBus = RepositoryProvider.of<EventBus>(context);
+                eventBus.fire(NavigateToHomeEvent());
               }
             },
           ),

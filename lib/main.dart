@@ -1,3 +1,4 @@
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,41 +6,58 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:to_do_app/archive_page/archive_page.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
+import 'package:to_do_app/global_events.dart';
 import 'package:to_do_app/home_page/home_page.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 import 'add_page/add_page.dart';
 
 void main(List<String> args) {
-  runApp(const RootApp());
+  runApp(RootApp());
 }
 
 class RootApp extends StatelessWidget {
-  const RootApp({Key? key}) : super(key: key);
+  RootApp({Key? key}) : super(key: key);
+
+  final tabController = CupertinoTabController();
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      home: Builder(builder: (context) {
-        //Injecting repositories
-        return MultiRepositoryProvider(
-          providers: [
-            RepositoryProvider(
-              create: (context) => AppDatabase.connect(),
-            ),
-            RepositoryProvider(
-              create: (context) =>
-                  TaskRepository(RepositoryProvider.of<AppDatabase>(context)),
-            ),
-            RepositoryProvider(
-              create: (context) => FToast().init(context),
-            )
-          ],
-          child: CupertinoTabScaffold(
+      home: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider(
+            create: (context) => AppDatabase.connect(),
+          ),
+          RepositoryProvider(
+            create: (context) => EventBus(),
+          ),
+          RepositoryProvider(
+            create: (context) =>
+                TaskRepository(RepositoryProvider.of<AppDatabase>(context)),
+          ),
+          RepositoryProvider(
+            create: (context) => FToast().init(context),
+          )
+        ],
+        child: Builder(builder: (context) {
+          var eventBus = RepositoryProvider.of<EventBus>(context);
+          eventBus.on<NavigateToHomeEvent>().listen((event) {
+            tabController.index = 0;
+            currentIndex = 0;
+            eventBus.fire(ClearAddPageDataEvent());
+          });
+
+          return CupertinoTabScaffold(
+            controller: tabController,
             resizeToAvoidBottomInset: false,
             tabBar: CupertinoTabBar(
               onTap: (value) {
-                
+                if (currentIndex == 1 && value != 1) {
+                  eventBus.fire(ClearAddPageDataEvent());
+                }
+                currentIndex = value;
               },
               height: 80,
               backgroundColor: Color(bottomNavBarColor),
@@ -83,7 +101,6 @@ class RootApp extends StatelessWidget {
               ],
             ),
             tabBuilder: (context, value) {
-              print("building");
               late Widget page;
               if (value == 0) {
                 page = HomePage();
@@ -94,9 +111,9 @@ class RootApp extends StatelessWidget {
               }
               return page;
             },
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 

@@ -23,7 +23,7 @@ class SearchPage extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(18.0),
+        padding: const EdgeInsets.symmetric(horizontal: 18.0),
         child: Column(
           children: [
             Hero(
