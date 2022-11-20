@@ -36,33 +36,9 @@ class TaskDetailCard extends StatelessWidget {
                   if (task.archieved)
                     DetailAction(
                       onTap: () {
-                        showCupertinoDialog(
-                            context: context,
-                            builder: (dContext) {
-                              return CupertinoAlertDialog(
-                                title: const Text("Restore task"),
-                                actions: [
-                                  CupertinoDialogAction(
-                                    child: const Text("Cancel"),
-                                    onPressed: () {
-                                      Navigator.of(dContext).pop();
-                                    },
-                                  ),
-                                  CupertinoDialogAction(
-                                    child: const Text("Confirm"),
-                                    onPressed: () {
-                                      rep.updateTask(task
-                                          .copyWith(archieved: false)
-                                          .toCompanion(true));
-                                      Navigator.of(dContext).pop();
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
-                            });
                         rep.updateTask(
                             task.copyWith(archieved: false).toCompanion(true));
+                        Navigator.of(context).pop();
                       },
                       title: "Restore",
                       icon: const Icon(
@@ -74,31 +50,9 @@ class TaskDetailCard extends StatelessWidget {
                   if (!task.completed && !task.archieved)
                     DetailAction(
                       onTap: () {
-                        showCupertinoDialog(
-                            context: context,
-                            builder: (dContext) {
-                              return CupertinoAlertDialog(
-                                title: const Text("Restore task"),
-                                actions: [
-                                  CupertinoDialogAction(
-                                    child: const Text("Cancel"),
-                                    onPressed: () {
-                                      Navigator.of(dContext).pop();
-                                    },
-                                  ),
-                                  CupertinoDialogAction(
-                                    child: const Text("Confirm"),
-                                    onPressed: () {
-                                      rep.updateTask(task
-                                          .copyWith(completed: true)
-                                          .toCompanion(true));
-                                      Navigator.of(dContext).pop();
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              );
-                            });
+                        rep.updateTask(
+                            task.copyWith(completed: true).toCompanion(true));
+                        Navigator.of(context).pop();
                       },
                       title: "Complete",
                       icon: const Icon(

@@ -23,38 +23,36 @@ class ArchivedTasks extends StatelessWidget {
     context.watch<ArchivePageCubit>();
     var list = cubit.state.archievedTasks;
     return DiffUtilSliverList<TaskData>(
-            items: List.from(list),
-            builder: (p0, task) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          transitionDuration:
-                              const Duration(milliseconds: 250),
-                          transitionsBuilder: (context, animation,
-                              secondaryAnimation, child) {
-                            return AppAnimations.routeNavigationAnim(
-                                animation, child);
-                          },
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) {
-                            return DetailPage(taskId: task.id);
-                          },
-                        ),
-                      );
+      items: List.from(list),
+      builder: (p0, task) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    transitionDuration: const Duration(milliseconds: 250),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return AppAnimations.routeNavigationAnim(
+                          animation, child);
                     },
-                    child: _ArchiveTaskSlidable(task: task)),
-              );
-            },
-            insertAnimationBuilder: (context, animation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            removeAnimationBuilder: (context, animation, child) =>
-                AppAnimations.listItemRemoveAnim(animation, child),
-          );
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      return DetailPage(taskId: task.id);
+                    },
+                  ),
+                );
+              },
+              child: _ArchiveTaskSlidable(task: task)),
+        );
+      },
+      insertAnimationBuilder: (context, animation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      removeAnimationBuilder: (context, animation, child) =>
+          AppAnimations.listItemRemoveAnim(animation, child),
+    );
   }
 }
 
@@ -74,11 +72,8 @@ class _ArchiveTaskSlidable extends StatelessWidget {
             children: [
               SlidableAction(
                 onPressed: (context) {
-                  showCupertinoDialog(
-                      context: context,
-                      builder: (_) {
-                        return _RestoreDialog(task: task, rep: rep);
-                      });
+                  rep.updateTask(
+                      task.copyWith(archieved: false).toCompanion(true));
                 },
                 icon: Icons.restore,
                 label: "Restore",
@@ -107,35 +102,6 @@ class _ArchiveTaskSlidable extends StatelessWidget {
             ]),
         child: UtilWidgets.listItemContent(task),
       ),
-    );
-  }
-}
-
-class _RestoreDialog extends StatelessWidget {
-  const _RestoreDialog({super.key, required this.task, required this.rep});
-
-  final TaskData task;
-  final TaskRepository rep;
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
-      actions: [
-        CupertinoDialogAction(
-          child: const Text("Cancel"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        CupertinoDialogAction(
-          child: const Text("Confirm"),
-          onPressed: () {
-            rep.updateTask(task.copyWith(archieved: false).toCompanion(true));
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-      title: const Text("Restore task"),
     );
   }
 }
