@@ -156,10 +156,11 @@ class _AddPageState extends State<AddPage> {
       ),
     );
     fToast.showToast(
+      gravity: ToastGravity.CENTER,
         positionedToastBuilder: (context, child) => Positioned(
               left: 0,
               right: 0,
-              bottom: 60,
+              bottom: 100,
               child: child,
             ),
         child: toast);

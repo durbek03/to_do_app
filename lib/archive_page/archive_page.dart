@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:to_do_app/utils/colors.dart';
 import 'archived_tasks.dart';
@@ -46,17 +47,19 @@ class ArchivePage extends StatelessWidget {
               child: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: CustomScrollView(
-                    slivers: [
-                      SliverPadding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 2),
-                          sliver: SliverAnimatedSwitcher(
-                              duration: const Duration(milliseconds: 250),
-                              child: cubit.state.filter == Filter.CompletedTasks
-                                  ? CompletedTasks()
-                                  : const ArchivedTasks()))
-                    ],
+                  child: SlidableAutoCloseBehavior(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 2),
+                            sliver: SliverAnimatedSwitcher(
+                                duration: const Duration(milliseconds: 250),
+                                child: cubit.state.filter == Filter.CompletedTasks
+                                    ? CompletedTasks()
+                                    : const ArchivedTasks()))
+                      ],
+                    ),
                   ),
                 ),
               ),
