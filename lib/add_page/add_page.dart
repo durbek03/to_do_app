@@ -122,6 +122,7 @@ class _AddPageState extends State<AddPage> {
   }
 
   Widget _getAddButton() {
+    var toast = RepositoryProvider.of<FToast>(context);
     return GestureDetector(
       onTap: () {
         var title = titleController.text.trim();
@@ -153,30 +154,17 @@ class _AddPageState extends State<AddPage> {
 
         //check if text field is not empty
         if (title.isEmpty || description.isEmpty) {
-          var toast = RepositoryProvider.of<FToast>(context);
           FToast().removeCustomToast();
-          toast.showToast(
-              positionedToastBuilder: (context, child) => Positioned(
-                    right: 0,
-                    left: 0,
-                    bottom: 100,
-                    child: child,
-                  ),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.white,
-                    boxShadow: [UtilWidgets.shadow]),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: const Text("Complete all fields"),
-              ));
+          _showToast("Complete all fields", context);
           return;
         }
 
         var task = TaskCompanion.insert(
             title: title, description: description, date: selectedDate);
         rep.addTask(task);
+
+        FToast().removeCustomToast();
+        _showToast("Successfully added", context);
 
         var eventBus = RepositoryProvider.of<EventBus>(context);
         eventBus.fire(NavigateToHomeEvent());
@@ -205,25 +193,22 @@ class _AddPageState extends State<AddPage> {
 
   void _showToast(String message, BuildContext context) {
     var fToast = RepositoryProvider.of<FToast>(context);
-    fToast.removeCustomToast();
-
-    var toast = Container(
-      decoration: BoxDecoration(
-          color: Color(grey500), borderRadius: BorderRadius.circular(5)),
-      padding: const EdgeInsets.all(15),
-      child: Text(
-        message,
+    fToast.showToast(
+      positionedToastBuilder: (context, child) => Positioned(
+        right: 0,
+        left: 0,
+        bottom: 100,
+        child: child,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.white,
+            boxShadow: [UtilWidgets.shadow]),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Text(message),
       ),
     );
-    fToast.showToast(
-        gravity: ToastGravity.CENTER,
-        positionedToastBuilder: (context, child) => Positioned(
-              left: 0,
-              right: 0,
-              bottom: 100,
-              child: child,
-            ),
-        child: toast);
   }
 
   void _showDialog(BuildContext context, Widget child) {
