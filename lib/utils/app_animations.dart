@@ -10,10 +10,7 @@ class AppAnimations {
 
     return FadeTransition(
       opacity: animation.drive(tween),
-      child: FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
+      child: child,
     );
   }
 

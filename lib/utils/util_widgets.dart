@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:to_do_app/domain_layer/task_dao.dart';
 import 'package:to_do_app/utils/colors.dart';
 
 import '../domain_layer/app_database.dart';
 
 class UtilWidgets {
   static BoxShadow get shadow {
-    return const BoxShadow(
-      color: Colors.grey,
-      offset: Offset(0.0, 1.0), //(x,y)
+    return BoxShadow(
+      color: Color(grey700),
+      offset: const Offset(0.0, 1.0), //(x,y)
       blurRadius: 3.0,
     );
   }

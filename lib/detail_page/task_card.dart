@@ -74,8 +74,31 @@ class TaskDetailCard extends StatelessWidget {
                   if (!task.completed && !task.archieved)
                     DetailAction(
                       onTap: () {
-                        rep.updateTask(
-                            task.copyWith(completed: true).toCompanion(true));
+                        showCupertinoDialog(
+                            context: context,
+                            builder: (dContext) {
+                              return CupertinoAlertDialog(
+                                title: const Text("Restore task"),
+                                actions: [
+                                  CupertinoDialogAction(
+                                    child: const Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.of(dContext).pop();
+                                    },
+                                  ),
+                                  CupertinoDialogAction(
+                                    child: const Text("Confirm"),
+                                    onPressed: () {
+                                      rep.updateTask(task
+                                          .copyWith(completed: true)
+                                          .toCompanion(true));
+                                      Navigator.of(dContext).pop();
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            });
                       },
                       title: "Complete",
                       icon: const Icon(
@@ -96,7 +119,7 @@ class TaskDetailCard extends StatelessWidget {
                               },
                               pageBuilder:
                                   (context, animation, secondaryAnimation) {
-                                return EditPage();
+                                return EditPage(task: task);
                               },
                             ),
                           );
@@ -244,8 +267,8 @@ class _DeletionDialog extends StatelessWidget {
               onDelete.call();
               FToast().removeCustomToast();
               toast.showToast(
-                positionedToastBuilder: (context, child) => Positioned(
-                    bottom: 100, top: 0, left: 0, right: 0, child: child),
+                positionedToastBuilder: (context, child) =>
+                    Positioned(bottom: 100, left: 0, right: 0, child: child),
                 gravity: ToastGravity.CENTER,
                 child: UtilWidgets.restoreToast(
                   () {

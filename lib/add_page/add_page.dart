@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:to_do_app/add_page/action_button.dart';
 import 'package:to_do_app/domain_layer/app_database.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/global_events.dart';
 import 'package:to_do_app/utils/colors.dart';
+
+import '../utils/util_widgets.dart';
 
 class AddPage extends StatefulWidget {
   AddPage({Key? key}) : super(key: key);
@@ -23,8 +24,6 @@ class _AddPageState extends State<AddPage> {
 
   DateTime selectedDate = DateTime.now();
   final DateFormat formatter = DateFormat('dd.MM.yyyy');
-
-  Color textColor = const Color.fromARGB(255, 78, 78, 78);
 
   @override
   Widget build(BuildContext context) {
@@ -49,98 +48,159 @@ class _AddPageState extends State<AddPage> {
             style: TextStyle(color: Color(green700)),
           ),
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: Column(
-              children: [
-                CupertinoTextField(
-                  style: TextStyle(color: textColor),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: 40,
+                child: CupertinoTextField(
                   controller: titleController,
+                  style: TextStyle(color: textColor),
+                  placeholder: "Title",
                   decoration: _getTextFieldDecoration(),
-                  placeholder: "Task title",
                 ),
-                const SizedBox(
-                  height: 10,
+              ),
+              const SizedBox(height: 15),
+              SizedBox(
+                height: 200,
+                child: CupertinoTextField(
+                  controller: descrController,
+                  maxLines: null,
+                  textAlignVertical: TextAlignVertical.top,
+                  style: TextStyle(color: textColor),
+                  placeholder: "Description",
+                  decoration: _getTextFieldDecoration(),
                 ),
-                SizedBox(
-                  height: 250,
-                  child: CupertinoTextField(
-                    style: TextStyle(color: textColor),
-                    controller: descrController,
-                    textAlignVertical: TextAlignVertical.top,
-                    maxLines: null,
-                    placeholder: "Task description",
-                    decoration: _getTextFieldDecoration(),
+              ),
+              const SizedBox(height: 15),
+              GestureDetector(
+                onTap: () {
+                  showCupertinoModalPopup(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        height: 210,
+                        color: Colors.white,
+                        child: CupertinoDatePicker(
+                          minimumDate: DateTime.now(),
+                          mode: CupertinoDatePickerMode.date,
+                          onDateTimeChanged: (value) {
+                            setState(() {
+                              selectedDate = value;
+                            });
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  height: 40,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: _getTextFieldDecoration(),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                        "Due to: ${formatter.format(selectedDate)}",
+                        style: const TextStyle(color: Colors.blue),
+                      )),
+                      const Icon(Icons.calendar_today)
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                _getActionButtons(context)
-              ],
-            ),
+              ),
+              const SizedBox(height: 15),
+              _getAddButton()
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _getActionButtons(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-            child: ActionButton(
-          title: "Due to: ${formatter.format(selectedDate)}",
-          color: Color(red),
-          onTap: () {
-            _showDialog(
-              context,
-              CupertinoDatePicker(
-                minimumDate: DateTime.now(),
-                mode: CupertinoDatePickerMode.date,
-                onDateTimeChanged: (value) {
-                  setState(() {
-                    selectedDate = value;
-                  });
-                },
-                key: UniqueKey(),
-              ),
-            );
-          },
-        )),
-        const SizedBox(width: 10),
-        Expanded(
-          child: ActionButton(
-            title: "Add to do list",
+  Widget _getAddButton() {
+    return GestureDetector(
+      onTap: () {
+        var title = titleController.text.trim();
+        var description = descrController.text.trim();
+
+        var rep = RepositoryProvider.of<TaskRepository>(context);
+
+        if (title.isEmpty || description.isEmpty) {
+          var toast = RepositoryProvider.of<FToast>(context);
+          FToast().removeCustomToast();
+          toast.showToast(
+              positionedToastBuilder: (context, child) => Positioned(
+                    right: 0,
+                    left: 0,
+                    bottom: 100,
+                    child: child,
+                  ),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                    boxShadow: [UtilWidgets.shadow]),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: const Text("Complete all fields"),
+              ));
+          return;
+        }
+
+        //check if text field is not empty
+        if (title.isEmpty || description.isEmpty) {
+          var toast = RepositoryProvider.of<FToast>(context);
+          FToast().removeCustomToast();
+          toast.showToast(
+              positionedToastBuilder: (context, child) => Positioned(
+                    right: 0,
+                    left: 0,
+                    bottom: 100,
+                    child: child,
+                  ),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                    boxShadow: [UtilWidgets.shadow]),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: const Text("Complete all fields"),
+              ));
+          return;
+        }
+
+        var task = TaskCompanion.insert(
+            title: title, description: description, date: selectedDate);
+        rep.addTask(task);
+
+        var eventBus = RepositoryProvider.of<EventBus>(context);
+        eventBus.fire(NavigateToHomeEvent());
+      },
+      child: Container(
+        alignment: Alignment.center,
+        height: 40,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
             color: Color(green),
-            onTap: () {
-              FocusManager.instance.primaryFocus!.unfocus();
-
-              var title = titleController.text.trim();
-              var descr = descrController.text.trim();
-              var date = selectedDate;
-
-              if (title.isEmpty || descr.isEmpty) {
-                _showToast("Complete all fields", context);
-                return;
-              } else {
-                var rep = RepositoryProvider.of<TaskRepository>(context);
-                rep.addTask(TaskCompanion.insert(
-                    title: title, description: descr, date: date));
-                _showToast("Successfully saved", context);
-                var eventBus = RepositoryProvider.of<EventBus>(context);
-                eventBus.fire(NavigateToHomeEvent());
-              }
-            },
-          ),
-        )
-      ],
+            boxShadow: [UtilWidgets.shadow]),
+        child: const Text(
+          "Add",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 
   BoxDecoration _getTextFieldDecoration() {
     return BoxDecoration(
-        border: Border.all(width: 1, color: Color(grey700)),
-        borderRadius: BorderRadius.circular(5));
+        borderRadius: BorderRadius.circular(5),
+        boxShadow: [UtilWidgets.shadow],
+        color: Colors.white);
   }
 
   void _showToast(String message, BuildContext context) {
@@ -156,7 +216,7 @@ class _AddPageState extends State<AddPage> {
       ),
     );
     fToast.showToast(
-      gravity: ToastGravity.CENTER,
+        gravity: ToastGravity.CENTER,
         positionedToastBuilder: (context, child) => Positioned(
               left: 0,
               right: 0,
