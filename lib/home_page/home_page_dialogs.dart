@@ -32,42 +32,19 @@ class DeletionDialog extends StatelessWidget {
             Navigator.of(context).pop();
             FToast().removeCustomToast();
             toast.showToast(
-                positionedToastBuilder: (context, child) => Positioned(
-                      bottom: 50,
-                      left: 0,
-                      right: 0,
-                      child: child,
-                    ),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Color(grey200),
-                      borderRadius: BorderRadius.circular(5),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(0.0, 1.0), //(x,y)
-                          blurRadius: 3.0,
-                        ),
-                      ]),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 10),
-                      const Text("Successfully deleted "),
-                      CupertinoButton(
-                          child: Text(
-                            "Restore",
-                            style: TextStyle(color: Color(green)),
-                          ),
-                          onPressed: () {
-                            bloc.add(TaskUpdateEvent(
-                                task.copyWith(archieved: false)));
-                            FToast().removeCustomToast();
-                          })
-                    ],
-                  ),
-                ));
+              positionedToastBuilder: (context, child) => Positioned(
+                bottom: 100,
+                left: 0,
+                right: 0,
+                child: child,
+              ),
+              child: UtilWidgets.restoreToast(
+                () {
+                  bloc.add(TaskUpdateEvent(task.copyWith(archieved: false)));
+                  FToast().removeCustomToast();
+                },
+              ),
+            );
           },
         ),
         CupertinoDialogAction(
@@ -78,11 +55,12 @@ class DeletionDialog extends StatelessWidget {
             FToast().removeCustomToast();
             toast.showToast(
               positionedToastBuilder: (context, child) => Positioned(
-                bottom: 50,
+                bottom: 100,
                 left: 0,
                 right: 0,
                 child: child,
               ),
+              gravity: ToastGravity.CENTER,
               child: UtilWidgets.restoreToast(
                 () {
                   bloc.add(TaskAddEvent(task));

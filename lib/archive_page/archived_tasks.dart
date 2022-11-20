@@ -163,6 +163,13 @@ class _DeletionDialog extends StatelessWidget {
             Navigator.of(context).pop();
             FToast().removeCustomToast();
             fToast.showToast(
+              positionedToastBuilder: (context, child) => Positioned(
+                bottom: 100,
+                left: 0,
+                right: 0,
+                child: child,
+              ),
+              gravity: ToastGravity.CENTER,
               child: UtilWidgets.restoreToast(
                 () {
                   rep.addTask(task.toCompanion(true));
