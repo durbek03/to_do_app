@@ -23,7 +23,7 @@ class DetailPage extends StatelessWidget {
           backgroundColor: Color(grey200),
           navigationBar: CupertinoNavigationBar(
             border: null,
-            middle: const Text("To do"),
+            middle: Text("To do", style: TextStyle(color: Color(green700)),),
             backgroundColor: Color(grey200),
           ),
           child: AnimatedSwitcher(

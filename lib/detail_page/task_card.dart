@@ -73,7 +73,6 @@ class TaskDetailCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: Colors.white,
@@ -84,40 +83,54 @@ class TaskDetailCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 15),
-                  Align(
+                  Container(
+                    padding: const EdgeInsets.only(right: 20),
+                    color: Color(grey700),
+                    height: 80,
                     alignment: Alignment.centerRight,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Material(
+                        color: Color(grey700),
                         child: IconButton(
                             onPressed: () {
                               var slidable = Slidable.of(context)!;
                               slidable.openEndActionPane();
                             },
-                            icon: const Icon(Icons.arrow_back)),
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            )),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "• ${task.title}",
-                    style: TextStyle(
-                        color: Color(green700),
-                        fontSize: 18,
-                        overflow: TextOverflow.clip),
-                    maxLines: 1,
+                  const SizedBox(height: 40),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          "• ${task.title}",
+                          style: TextStyle(
+                              color: Color(green700),
+                              fontSize: 18,
+                              overflow: TextOverflow.clip),
+                          maxLines: 1,
+                        ),
+                        const SizedBox(height: 15),
+                        Text(task.description,
+                            style:
+                                TextStyle(fontSize: 15, color: Color(grey700))),
+                        const SizedBox(height: 15),
+                        Text(
+                          "Due to: ${formatter.format(task.date)}",
+                          style: TextStyle(fontSize: 15, color: Color(grey700)),
+                        )
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 15),
-                  Text(
-                      task.description,
-                      style: TextStyle(fontSize: 15, color: Color(grey700))),
-                  const SizedBox(height: 15),
-                  Text(
-                    "Due to: ${formatter.format(task.date)} \n \n \n \n",
-                    style: TextStyle(fontSize: 15, color: Color(grey700)),
-                  ),
-                  const SizedBox(height: 15),
+                  Container(height: 50)
                 ],
               );
             }),
