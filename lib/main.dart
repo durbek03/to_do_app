@@ -108,7 +108,7 @@ class RootApp extends StatelessWidget {
               } else if (value == 1) {
                 page = AddPage();
               } else if (value == 2) {
-                page = ArchivePage();
+                page = const ArchivePage();
               }
               return page;
             },

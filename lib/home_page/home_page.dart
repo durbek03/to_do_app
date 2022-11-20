@@ -73,20 +73,22 @@ class HomePage extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       PageRouteBuilder(
-                                          transitionDuration:
-                                              const Duration(milliseconds: 250),
-                                          transitionsBuilder: (context, animation,
-                                              secondaryAnimation, child) {
-                                            return AppAnimations.routeNavigationAnim(animation, child);
-                                          },
-                                          pageBuilder: (_, animation,
-                                                  secondaryAnimation) =>
-                                              BlocProvider.value(
-                                                value:
-                                                    BlocProvider.of<HomePageBloc>(
-                                                        context),
-                                                child: SearchPage(),
-                                              )),
+                                        transitionDuration:
+                                            const Duration(milliseconds: 250),
+                                        transitionsBuilder: (context, animation,
+                                            secondaryAnimation, child) {
+                                          return AppAnimations
+                                              .routeNavigationAnim(
+                                                  animation, child);
+                                        },
+                                        pageBuilder: (_, animation,
+                                                secondaryAnimation) =>
+                                            BlocProvider.value(
+                                          value: BlocProvider.of<HomePageBloc>(
+                                              context),
+                                          child: SearchPage(),
+                                        ),
+                                      ),
                                     );
                                   },
                                 ),
