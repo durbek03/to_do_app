@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 import 'package:to_do_app/domain_layer/task_repository.dart';
 import 'package:to_do_app/utils/app_animations.dart';
 import 'package:to_do_app/utils/colors.dart';
@@ -22,36 +23,38 @@ class ArchivedTasks extends StatelessWidget {
     context.watch<ArchivePageCubit>();
     var list = cubit.state.archievedTasks;
     return DiffUtilSliverList<TaskData>(
-      items: List.from(list),
-      builder: (p0, task) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 10.0),
-          child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    transitionDuration: const Duration(milliseconds: 250),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return AppAnimations.routeNavigationAnim(
-                          animation, child);
+            items: List.from(list),
+            builder: (p0, task) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionDuration:
+                              const Duration(milliseconds: 250),
+                          transitionsBuilder: (context, animation,
+                              secondaryAnimation, child) {
+                            return AppAnimations.routeNavigationAnim(
+                                animation, child);
+                          },
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) {
+                            return DetailPage(taskId: task.id);
+                          },
+                        ),
+                      );
                     },
-                    pageBuilder: (context, animation, secondaryAnimation) {
-                      return DetailPage(taskId: task.id);
-                    },
-                  ),
-                );
-              },
-              child: _ArchiveTaskSlidable(task: task)),
-        );
-      },
-      insertAnimationBuilder: (context, animation, child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
-      removeAnimationBuilder: (context, animation, child) =>
-          AppAnimations.listItemRemoveAnim(animation, child),
-    );
+                    child: _ArchiveTaskSlidable(task: task)),
+              );
+            },
+            insertAnimationBuilder: (context, animation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            removeAnimationBuilder: (context, animation, child) =>
+                AppAnimations.listItemRemoveAnim(animation, child),
+          );
   }
 }
 
@@ -66,7 +69,7 @@ class _ArchiveTaskSlidable extends StatelessWidget {
     return UtilWidgets.listItemContainer(
       Slidable(
         endActionPane: ActionPane(
-            extentRatio: 3 / 5,
+            extentRatio: 2 / 3,
             motion: const ScrollMotion(),
             children: [
               SlidableAction(

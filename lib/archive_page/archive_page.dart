@@ -21,47 +21,83 @@ class ArchivePage extends StatelessWidget {
           return SafeArea(
             child: CupertinoPageScaffold(
               backgroundColor: Color(grey200),
-              navigationBar: CupertinoNavigationBar(
-                backgroundColor: Color(grey200),
-                border: null,
-                middle: CupertinoSegmentedControl<Filter>(
-                  borderColor: Color(green700),
-                  selectedColor: Color(green700),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  groupValue: cubit.state.filter,
-                  onValueChanged: (Filter value) {
-                    cubit.changeFilter(value);
-                  },
-                  children: const <Filter, Widget>{
-                    Filter.CompletedTasks: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Completed'),
-                    ),
-                    Filter.ArchievedTasks: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Deleted'),
-                    ),
-                  },
-                ),
-              ),
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: SlidableAutoCloseBehavior(
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverPadding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 2),
-                            sliver: SliverAnimatedSwitcher(
-                                duration: const Duration(milliseconds: 250),
-                                child: cubit.state.filter == Filter.CompletedTasks
-                                    ? CompletedTasks()
-                                    : const ArchivedTasks()))
-                      ],
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: CupertinoSegmentedControl<Filter>(
+                      borderColor: Color(green700),
+                      selectedColor: Color(green700),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      groupValue: cubit.state.filter,
+                      onValueChanged: (Filter value) {
+                        cubit.changeFilter(value);
+                      },
+                      children: const <Filter, Widget>{
+                        Filter.CompletedTasks: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text('Completed'),
+                        ),
+                        Filter.ArchievedTasks: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text('Deleted'),
+                        ),
+                      },
                     ),
                   ),
-                ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: SlidableAutoCloseBehavior(
+                        child: CustomScrollView(
+                          slivers: [
+                            SliverPadding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 2),
+                              sliver: Builder(
+                                builder: (context) {
+                                  late Widget page;
+                                  if (cubit.state.filter ==
+                                          Filter.CompletedTasks &&
+                                      cubit.state.completedTasks.isNotEmpty) {
+                                    page = const CompletedTasks();
+                                  } else if (cubit.state.filter ==
+                                          Filter.ArchievedTasks &&
+                                      cubit.state.archievedTasks.isNotEmpty) {
+                                    page = const ArchivedTasks();
+                                  } else {
+                                    page = SliverPadding(
+                                        padding: const EdgeInsets.only(top: 40),
+                                        sliver: SliverToBoxAdapter(
+                                            child: Column(
+                                          children: [
+                                            Image.asset(
+                                              "lib/assets/empty.png",
+                                              color: Color(green),
+                                              scale: 5,
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              "No data to show",
+                                              style: TextStyle(
+                                                  color: Color(green700)),
+                                            ),
+                                          ],
+                                        )));
+                                  }
+                                  return SliverAnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      child: page);
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );

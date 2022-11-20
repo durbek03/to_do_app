@@ -56,8 +56,7 @@ class SearchAnimatedSliverList extends StatelessWidget {
                               animation, child);
                         },
                         pageBuilder: (context, animation, secondaryAnimation) {
-                          return DetailPage(
-                              taskId: task.id);
+                          return DetailPage(taskId: task.id);
                         },
                       ),
                     );
@@ -65,10 +64,7 @@ class SearchAnimatedSliverList extends StatelessWidget {
                   child: HomePageListItem(
                     task: task,
                     completeClick: () {
-                      showCupertinoDialog(
-                          context: context,
-                          builder: (_) =>
-                              CompletionDialog(bloc: bloc, task: task));
+                      bloc.add(TaskUpdateEvent(task.copyWith(completed: true)));
                     },
                     deleteClick: () {
                       showCupertinoDialog(

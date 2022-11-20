@@ -23,7 +23,7 @@ class HomePageListItem extends StatelessWidget {
     return UtilWidgets.listItemContainer(
       Slidable(
         endActionPane: ActionPane(
-          extentRatio: 3 / 5,
+          extentRatio: 2 / 3,
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
